@@ -1,0 +1,245 @@
+// prisma/schema.prisma  — SQLite-compatible (temporary dev setup)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  emailVerified  DateTime?
+  passwordHash   String?
+  name           String?
+  image          String?
+  role           String   @default("USER")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  profile        Profile?
+  membership     Membership?
+  assessmentResults AssessmentResult[]
+  enrollments    Enrollment[]
+  bookings       Booking[]           @relation("UserBookings")
+  coachProfile   Coach?
+  articles       Article[]
+  accounts       Account[]
+  sessions       Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Profile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  bio         String?
+  phone       String?
+  country     String?
+  city        String?
+  language    String   @default("en")
+  timezone    String   @default("UTC")
+  goals       String   @default("[]")
+  interests   String   @default("[]")
+  avatarUrl   String?
+  linkedinUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Membership {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  plan        String   @default("FREE")
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  isActive    Boolean  @default(true)
+  stripeId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Assessment {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  domain      String
+  questions   String
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  results     AssessmentResult[]
+}
+
+model AssessmentResult {
+  id              String   @id @default(cuid())
+  userId          String
+  assessmentId    String
+  answers         String
+  score           Int?
+  report          String?
+  recommendations String   @default("[]")
+  completedAt     DateTime @default(now())
+
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessment  Assessment @relation(fields: [assessmentId], references: [id])
+
+  @@unique([userId, assessmentId])
+}
+
+model Program {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  domain       String
+  type         String
+  imageUrl     String?
+  price        Float    @default(0)
+  currency     String   @default("GBP")
+  duration     String?
+  level        String?
+  tags         String   @default("[]")
+  isPublished  Boolean  @default(false)
+  order        Int      @default(0)
+  coachId      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  coach        Coach?       @relation(fields: [coachId], references: [id])
+  enrollments  Enrollment[]
+  modules      ProgramModule[]
+}
+
+model ProgramModule {
+  id          String   @id @default(cuid())
+  programId   String
+  title       String
+  description String?
+  content     String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  program     Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id          String   @id @default(cuid())
+  userId      String
+  programId   String
+  progress    Int      @default(0)
+  status      String   @default("ACTIVE")
+  enrolledAt  DateTime @default(now())
+  completedAt DateTime?
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  program     Program  @relation(fields: [programId], references: [id])
+
+  @@unique([userId, programId])
+}
+
+model Coach {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  bio           String
+  specialties   String   @default("[]")
+  domains       String   @default("[]")
+  hourlyRate    Float?
+  currency      String   @default("GBP")
+  status        String   @default("PENDING")
+  rating        Float?
+  totalSessions Int      @default(0)
+  linkedinUrl   String?
+  cvUrl         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  programs     Program[]
+  bookings     Booking[]
+  availability Availability[]
+}
+
+model Availability {
+  id        String  @id @default(cuid())
+  coachId   String
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  isActive  Boolean @default(true)
+
+  coach     Coach   @relation(fields: [coachId], references: [id], onDelete: Cascade)
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  userId      String
+  coachId     String
+  scheduledAt DateTime
+  duration    Int      @default(60)
+  status      String   @default("PENDING")
+  notes       String?
+  meetingUrl  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation("UserBookings", fields: [userId], references: [id])
+  coach       Coach    @relation(fields: [coachId], references: [id])
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  content     String
+  imageUrl    String?
+  domain      String   @default("GENERAL")
+  tags        String   @default("[]")
+  authorId    String
+  isPublished Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author      User     @relation(fields: [authorId], references: [id])
+}

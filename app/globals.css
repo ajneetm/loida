@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono&display=swap');
+
+@layer base {
+  :root {
+    --font-display: 'Cormorant Garamond';
+    --font-body:    'DM Sans';
+    --font-mono:    'DM Mono';
+    --radius: 0.75rem;
+
+    /* Shadcn tokens */
+    --background:   0 0% 100%;
+    --foreground:   222 47% 11%;
+    --card:         0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover:      0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary:      222 47% 11%;
+    --primary-foreground: 210 40% 98%;
+    --secondary:    210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted:        210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent:       210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive:  0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border:       214 32% 91%;
+    --input:        214 32% 91%;
+    --ring:         222 47% 11%;
+  }
+}
+
+@layer base {
+  * { 
+    /* هذه نجحت معك، سنطبق نفس المنطق للبقية */
+    border-color: hsl(214 32% 91%); 
+  }
+
+  body {
+    /* بدلاً من @apply bg-background */
+    background-color: hsl(0 0% 100%); /* اللون الأبيض من متغير --background */
+    
+    /* بدلاً من @apply text-foreground */
+    color: hsl(222 47% 11%); /* اللون الداكن من متغير --foreground */
+    
+    /* بدلاً من @apply font-body */
+    font-family: 'DM Sans', system-ui, sans-serif;
+    
+    /* تحسين تنعيم الخط */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 {
+    /* بدلاً من @apply font-display */
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #B8973A44; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #B8973A99; }
+
+/* ── Domain badge pill ── */
+.domain-pill {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide uppercase;
+}
+
+/* ── Noise texture overlay ── */
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, #B8973A 0%, #D4B05A 50%, #B8973A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Staggered animations ── */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+
+/* ── Glass card ── */
+.glass {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
