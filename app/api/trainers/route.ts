@@ -8,10 +8,10 @@ import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 
 const createTrainerSchema = z.object({
-  name:  z.string().min(2),
-  email: z.string().email(),
-  bio:   z.string().optional(),
-  phone: z.string().optional(),
+  name:         z.string().min(2),
+  email:        z.string().email(),
+  phone:        z.string().optional(),
+  curriculumIds: z.array(z.string()).min(1, 'Select at least one curriculum'),
 })
 
 export async function GET() {
@@ -82,6 +82,14 @@ export async function POST(req: Request) {
   const tempPassword   = Math.random().toString(36).slice(-10)
   const passwordHash   = await bcrypt.hash(tempPassword, 12)
 
+  // Verify all curriculumIds exist and are active
+  const curricula = await prisma.curriculum.findMany({
+    where: { id: { in: parsed.data.curriculumIds }, isActive: true },
+  })
+  if (curricula.length !== parsed.data.curriculumIds.length) {
+    return NextResponse.json({ error: 'One or more selected curricula are invalid' }, { status: 400 })
+  }
+
   const user = await prisma.user.create({
     data: {
       name:         parsed.data.name,
@@ -91,15 +99,15 @@ export async function POST(req: Request) {
       trainerProfile: {
         create: {
           agentId,
-          bio:   parsed.data.bio,
           phone: parsed.data.phone,
+          accreditations: {
+            create: parsed.data.curriculumIds.map(id => ({ curriculumId: id })),
+          },
         },
       },
     },
     include: { trainerProfile: true },
   })
-
-  // TODO: send welcome email with tempPassword
 
   return NextResponse.json({ ...user, tempPassword }, { status: 201 })
 }
