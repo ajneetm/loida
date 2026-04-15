@@ -19,7 +19,7 @@ async function main() {
       email:        'coach@loidabritish.com',
       passwordHash: coachHash,
       role:         'COACH',
-      profile:      { create: { language: 'en', timezone: 'Europe/London', interests: ['CAREER','BUSINESS'] } },
+      profile:      { create: { language: 'en', timezone: 'Europe/London', interests: JSON.stringify(['CAREER','BUSINESS']) } },
       membership:   { create: { plan: 'PROFESSIONAL', isActive: true } },
     },
   })
@@ -31,8 +31,8 @@ async function main() {
     create: {
       userId:      coachUser.id,
       bio:         'Senior business strategist and career coach with 15+ years of experience in the UK and MENA markets. I have helped over 200 professionals transition careers and 50+ startups develop winning strategies.',
-      specialties: ['Career Transition', 'Business Strategy', 'Leadership', 'Personal Branding'],
-      domains:     ['CAREER', 'BUSINESS'],
+      specialties: JSON.stringify(['Career Transition', 'Business Strategy', 'Leadership', 'Personal Branding']),
+      domains:     JSON.stringify(['CAREER', 'BUSINESS']),
       hourlyRate:  85,
       currency:    'GBP',
       status:      'APPROVED',
@@ -86,11 +86,13 @@ async function main() {
   ]
 
   for (const article of articles) {
+    const { tags, ...rest } = article
     await prisma.article.upsert({
-      where: { slug: article.slug },
+      where: { slug: rest.slug },
       update: {},
       create: {
-        ...article,
+        ...rest,
+        tags:        JSON.stringify(tags),
         authorId:    adminUser.id,
         isPublished: true,
         publishedAt: new Date(),

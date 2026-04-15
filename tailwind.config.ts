@@ -10,18 +10,26 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        display: ['var(--font-display)', 'Georgia', 'serif'],
-        body:    ['var(--font-body)', 'system-ui', 'sans-serif'],
-        mono:    ['var(--font-mono)', 'monospace'],
+        heading: ['Raleway', 'sans-serif'],
+        body:    ['Inter', 'Roboto', 'system-ui', 'sans-serif'],
+        arabic:  ['Tajawal', 'sans-serif'],
+        // legacy aliases used by dashboard
+        display: ['Raleway', 'sans-serif'],
+        mono:    ['monospace'],
       },
       colors: {
-        // Brand
-        navy:    { DEFAULT: '#0F1B35', light: '#1A2B4A', dark: '#080E1C' },
-        gold:    { DEFAULT: '#B8973A', light: '#D4B05A', dark: '#8A6E25' },
-        // Domain colors
-        harmony: { DEFAULT: '#6B8F9E', light: '#8AACBA', dark: '#4A7286' },
-        career:  { DEFAULT: '#B8973A', light: '#D4B05A', dark: '#8A6E25' },
-        business:{ DEFAULT: '#2C4A3E', light: '#3D6455', dark: '#1A2E26' },
+        // Brand (loidabritish.com exact values)
+        brand: {
+          navy:  '#022269',
+          royal: '#1a73e8',
+          red:   '#c71430',
+          cyan:  '#607980',
+        },
+        // Backward compat aliases used in dashboard
+        navy:    { DEFAULT: '#022269', light: '#1a3a8f', dark: '#011344' },
+        harmony: { DEFAULT: '#607980', light: '#8AACBA', dark: '#4A7286' },
+        career:  { DEFAULT: '#022269', light: '#1a3a8f', dark: '#011344' },
+        business:{ DEFAULT: '#c71430', light: '#e03050', dark: '#8e0e22' },
         // Neutrals
         stone: {
           50:  '#FAFAF9',
@@ -56,9 +64,9 @@ const config: Config = {
         },
       },
       animation: {
-        'fade-up':    'fade-up 0.6s ease forwards',
-        'fade-in':    'fade-in 0.4s ease forwards',
-        'shimmer':    'shimmer 2s infinite linear',
+        'fade-up': 'fade-up 0.6s ease forwards',
+        'fade-in': 'fade-in 0.4s ease forwards',
+        'shimmer': 'shimmer 2s infinite linear',
       },
     },
   },

@@ -2,104 +2,142 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
-const links = [
-  { label: 'Platform',   href: '#domains' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Membership', href: '#membership' },
-  { label: 'Articles',   href: '/articles' },
+// Exact widths from Wix HeaderSITEHEADER component
+// href: go to a page directly | anchor: scroll to section on homepage
+const links: { label: string; width: string; anchor?: string; href?: string }[] = [
+  { label: 'HOME',           anchor: 'home',           width: '75px'  },
+  { label: 'WHO WE ARE',    anchor: 'who-we-are',      width: '127px' },
+  { label: 'WHAT WE OFFER', anchor: 'what-we-offer',   width: '151px' },
+  { label: 'BUSINESS CLOCK',anchor: 'business-clock',  width: '159px' },
+  { label: 'LOCATION',      anchor: 'location',        width: '105px' },
+  { label: 'CONTACT US',    href: '/contact',           width: '125px' },
 ]
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [active, setActive] = useState('HOME')
+  const pathname = usePathname()
+  const router = useRouter()
+  const isHome = pathname === '/'
 
+  // Highlight active section on homepage via IntersectionObserver
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+    if (!isHome) return
+    const observers: IntersectionObserver[] = []
+    links.forEach(l => {
+      const el = l.anchor ? document.getElementById(l.anchor) : null
+      if (!el) return
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActive(l.label) },
+        { rootMargin: '-40% 0px -55% 0px' }
+      )
+      obs.observe(el)
+      observers.push(obs)
+    })
+    return () => observers.forEach(o => o.disconnect())
+  }, [isHome])
 
-  const scrollTo = (href: string) => {
+  const handleClick = (label: string, anchor?: string, href?: string) => {
     setOpen(false)
-    if (href.startsWith('#')) {
-      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+    setActive(label)
+    if (href) {
+      router.push(href)
+      return
+    }
+    if (!anchor) return
+    if (isHome) {
+      const el = document.getElementById(anchor)
+      el?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      router.push(`/#${anchor}`)
     }
   }
 
   return (
-    <header className={cn(
-      'fixed top-0 inset-x-0 z-50 transition-all duration-500',
-      scrolled
-        ? 'bg-[#0A1628]/95 backdrop-blur-md border-b border-white/8 py-3'
-        : 'bg-transparent py-5'
-    )}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    /* bg-color-grey-96 = #f0f7f9, height 117px, sticky, z-[99] */
+    <header className="fixed top-0 inset-x-0 z-[99] bg-[#f0f7f9]">
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[117px]">
+
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 pt-[51px] pb-9">
           <div className="w-9 h-9 relative">
             <Image
-              src="https://static.wixstatic.com/media/706dde_227e86ca03734151ba9b38890bb65bd0~mv2.png/v1/fill/w_305,h_299,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo%209989-13.png"
+              src="/images/logo.png"
               alt="Loida British"
               fill
-              className="object-contain brightness-0 invert"
+              className="object-contain"
             />
           </div>
           <div>
-            <p className="text-white text-[13px] font-semibold tracking-[0.15em] leading-none">LOIDA BRITISH</p>
-            <p className="text-[#B8973A] text-[9px] tracking-[0.2em] uppercase mt-0.5">Learning & Training</p>
+            <p className="text-[#022269] text-[12px] font-bold tracking-[0.15em] leading-none font-['Raleway']">LOIDA BRITISH</p>
+            <p className="text-gray-400 text-[9px] tracking-[0.2em] uppercase mt-0.5 font-['Inter']">Learning & Training</p>
           </div>
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8">
+        {/* Desktop nav — ALL CAPS, 14.8px, #444, Inter */}
+        <nav className="hidden lg:flex items-center h-[30px]">
           {links.map(l => (
             <button
               key={l.label}
-              onClick={() => scrollTo(l.href)}
-              className="text-[13px] text-white/70 hover:text-white tracking-wide transition-colors"
+              onClick={() => handleClick(l.label, l.anchor, l.href)}
+              style={{ width: l.width }}
+              className={cn(
+                'flex items-center justify-center leading-[30px] text-[14.8px] font-normal font-[Inter,sans-serif] cursor-pointer transition-colors whitespace-nowrap px-[6px]',
+                active === l.label
+                  ? 'bg-[#c0c8da] text-[#444]'
+                  : 'text-[#444] hover:bg-[#c0c8da]/60'
+              )}
             >
               {l.label}
             </button>
           ))}
         </nav>
 
-        {/* CTAs */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link href="/auth/login" className="text-[13px] text-white/70 hover:text-white tracking-wide transition-colors px-3 py-1.5">
-            Sign In
-          </Link>
+        {/* Log In — #607980, 17.3px, line-height 31.5px */}
+        <div className="hidden lg:flex items-center">
           <Link
-            href="/auth/signup"
-            className="bg-[#B8973A] hover:bg-[#D4B05A] text-white text-[13px] font-medium px-5 py-2 rounded-full tracking-wide transition-colors"
+            href="/auth/login"
+            className="flex items-center py-1.5 pl-[7px] pr-0 text-[#607980] hover:text-[#022269] transition-colors font-['Inter']"
           >
-            Start Your Journey
+            <span className="h-[26px] w-[26px] flex items-center justify-center mr-[7px]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+              </svg>
+            </span>
+            <span className="text-[17.3px] leading-[31.5px]">Log In</span>
           </Link>
         </div>
 
         {/* Mobile toggle */}
-        <button className="md:hidden text-white p-1" onClick={() => setOpen(!open)}>
+        <button className="lg:hidden text-[#444] p-1" onClick={() => setOpen(!open)}>
           <div className="space-y-1.5">
-            <span className={cn('block w-6 h-0.5 bg-white transition-all', open && 'rotate-45 translate-y-2')} />
-            <span className={cn('block w-6 h-0.5 bg-white transition-all', open && 'opacity-0')} />
-            <span className={cn('block w-6 h-0.5 bg-white transition-all', open && '-rotate-45 -translate-y-2')} />
+            <span className={cn('block w-6 h-0.5 bg-[#444] transition-all', open && 'rotate-45 translate-y-2')} />
+            <span className={cn('block w-6 h-0.5 bg-[#444] transition-all', open && 'opacity-0')} />
+            <span className={cn('block w-6 h-0.5 bg-[#444] transition-all', open && '-rotate-45 -translate-y-2')} />
           </div>
         </button>
       </div>
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-[#0A1628]/98 border-t border-white/10 px-6 py-6 flex flex-col gap-4">
+        <div className="lg:hidden bg-[#f0f7f9] border-t border-gray-200 px-6 py-4 flex flex-col gap-1">
           {links.map(l => (
-            <button key={l.label} onClick={() => scrollTo(l.href)} className="text-left text-white/80 text-sm py-1">
+            <button
+              key={l.label}
+              onClick={() => handleClick(l.label, l.anchor, l.href)}
+              className={cn(
+                'text-left text-[14.8px] py-2.5 border-b border-gray-200 font-normal font-[Inter,sans-serif] transition-colors',
+                active === l.label ? 'bg-[#c0c8da] px-2 text-[#444]' : 'text-[#444]'
+              )}
+            >
               {l.label}
             </button>
           ))}
-          <hr className="border-white/10" />
-          <Link href="/auth/login" className="text-white/70 text-sm">Sign In</Link>
-          <Link href="/auth/signup" className="bg-[#B8973A] text-white text-sm font-medium px-5 py-2.5 rounded-full text-center">
-            Start Your Journey
+          <Link href="/auth/login" className="text-[#607980] text-[17.3px] font-normal py-2 mt-1 font-['Inter']">
+            Log In
           </Link>
         </div>
       )}

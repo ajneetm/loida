@@ -1,67 +1,112 @@
-// components/landing/TestimonialsSection.tsx
-const testimonials = [
-  {
-    name: 'Sarah Al-Rashid',
-    role: 'Career Transitioner → UX Designer',
-    domain: 'CAREER',
-    quote: 'The career assessment pinpointed exactly what was blocking me. Six months later, I landed my dream role in tech.',
-    initials: 'SR',
-  },
-  {
-    name: 'James Okonkwo',
-    role: 'Startup Founder',
-    domain: 'BUSINESS',
-    quote: 'The Business Clock methodology transformed how I think about market timing. My startup is now profitable.',
-    initials: 'JO',
-  },
-  {
-    name: 'Layla Hassan',
-    role: 'Executive Coach',
-    domain: 'HARMONY',
-    quote: 'Harmony helped me understand myself deeply before I could lead others. Now I am a certified coach on this platform.',
-    initials: 'LH',
-  },
-]
-
-const domainColors: Record<string, string> = {
-  CAREER: '#B8973A',
-  BUSINESS: '#2C4A3E',
-  HARMONY: '#6B8F9E',
-}
+'use client'
+// Contact Us section
+import { useState } from 'react'
 
 export default function TestimonialsSection() {
-  return (
-    <section className="py-32 bg-[#060E1E]">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <p className="text-[#B8973A] text-xs tracking-[0.3em] uppercase mb-4">Success Stories</p>
-          <h2 className="font-display text-4xl md:text-5xl text-white font-light">Real Transformations</h2>
-        </div>
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
+  const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map(t => (
-            <div key={t.name} className="bg-white/3 border border-white/8 rounded-2xl p-8 hover:border-white/16 transition-colors">
-              <div
-                className="w-2 h-8 rounded-full mb-6"
-                style={{ background: domainColors[t.domain] }}
-              />
-              <p className="text-white/70 text-sm leading-relaxed mb-8 italic">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold"
-                  style={{ background: `${domainColors[t.domain]}20`, color: domainColors[t.domain] }}
-                >
-                  {t.initials}
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    await new Promise(r => setTimeout(r, 1000))
+    setSent(true)
+    setLoading(false)
+  }
+
+  return (
+    <section id="contact" className="py-24 bg-[#022269]">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+          {/* Left — info */}
+          <div className="text-white">
+            <p className="text-blue-300 text-xs tracking-[0.3em] uppercase font-semibold mb-4">Get In Touch</p>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">Contact Us</h2>
+            <p className="text-blue-100 leading-relaxed mb-10">
+              Have a question about our programs, coaching, or how to get started? We&apos;d love to hear from you. Our team will respond within 24 hours.
+            </p>
+
+            <div className="space-y-6">
+              {[
+                { icon: '📍', label: '83 Baker Street, London W1U 6AG' },
+                { icon: '📞', label: '+44 8000 608 703' },
+                { icon: '✉️', label: 'info@loidabritish.com' },
+              ].map(item => (
+                <div key={item.label} className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-white/10  flex items-center justify-center text-lg">
+                    {item.icon}
+                  </div>
+                  <p className="text-blue-100 text-sm">{item.label}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-3 mt-10">
+              {[
+                { label: 'Instagram', href: 'https://www.instagram.com/loida.british/' },
+                { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/105144233/' },
+                { label: 'Facebook',  href: 'https://www.facebook.com/profile.php?id=61566859705103' },
+              ].map(s => (
+                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
+                  className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-medium  transition-colors">
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Right — form */}
+          <div className="bg-white  p-8 shadow-xl">
+            {sent ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-green-50  flex items-center justify-center mx-auto mb-4 text-3xl">✅</div>
+                <h3 className="text-xl font-bold text-[#022269] mb-2">Message Sent!</h3>
+                <p className="text-gray-500 text-sm">Thank you for reaching out. We&apos;ll get back to you within 24 hours.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <h3 className="text-xl font-bold text-[#022269] mb-6">Send us a Message</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-500 font-medium mb-1">Your Name</label>
+                    <input type="text" required value={form.name}
+                      onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+                      className="w-full border border-gray-200  px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#022269]/50 transition-colors"
+                      placeholder="John Smith" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 font-medium mb-1">Email</label>
+                    <input type="email" required value={form.email}
+                      onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                      className="w-full border border-gray-200  px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#022269]/50 transition-colors"
+                      placeholder="you@example.com" />
+                  </div>
                 </div>
                 <div>
-                  <p className="text-white text-sm font-medium">{t.name}</p>
-                  <p className="text-white/40 text-xs">{t.role}</p>
+                  <label className="block text-xs text-gray-500 font-medium mb-1">Subject</label>
+                  <input type="text" value={form.subject}
+                    onChange={e => setForm(p => ({ ...p, subject: e.target.value }))}
+                    className="w-full border border-gray-200  px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#022269]/50 transition-colors"
+                    placeholder="How can we help?" />
                 </div>
-              </div>
-            </div>
-          ))}
+                <div>
+                  <label className="block text-xs text-gray-500 font-medium mb-1">Message</label>
+                  <textarea required rows={5} value={form.message}
+                    onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
+                    className="w-full border border-gray-200  px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-[#022269]/50 transition-colors resize-none"
+                    placeholder="Tell us what you need..." />
+                </div>
+                {/* Component4 exact: red bg, white, , 15.1px, line-height 19.2px */}
+                <button type="submit" disabled={loading}
+                  className="w-full bg-[#c71430] hover:bg-[#a01028] disabled:opacity-50 text-white  overflow-hidden flex items-center justify-center py-[11px] px-[7.4px] font-['Inter'] transition-colors"
+                  style={{ fontSize: '15.1px', lineHeight: '19.2px' }}>
+                  {loading ? 'Sending…' : 'Submit'}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>
