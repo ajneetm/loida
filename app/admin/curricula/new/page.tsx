@@ -34,8 +34,8 @@ export default function NewCurriculumPage() {
     <div className="max-w-lg mx-auto space-y-6">
       <h1 className="text-2xl font-semibold text-[#1C2B39]">Add Curriculum</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-[#E8E4DC] p-6 space-y-5">
-        {error && <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">{error}</div>}
+      <form onSubmit={handleSubmit} className="bg-white rounded-none border border-[#E8E4DC] p-6 space-y-5">
+        {error && <div className="bg-red-50 text-red-600 text-sm p-3 rounded-none">{error}</div>}
 
         <Field label="Curriculum Name">
           <input type="text" required value={form.name}
@@ -67,7 +67,7 @@ export default function NewCurriculumPage() {
         </Field>
 
         <button type="submit" disabled={loading}
-          className="w-full bg-[#1C2B39] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-[#2a3f52] transition-colors disabled:opacity-50">
+          className="w-full bg-[#1C2B39] text-white py-2.5 rounded-none text-sm font-medium hover:bg-[#2a3f52] transition-colors disabled:opacity-50">
           {loading ? 'Adding…' : 'Add Curriculum'}
         </button>
       </form>

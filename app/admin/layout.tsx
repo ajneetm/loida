@@ -79,7 +79,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       key={item.href}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors ${
+                      className={`flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
                         active
                           ? 'bg-white/12 text-white'
                           : 'text-white/50 hover:text-white hover:bg-white/8'
@@ -98,12 +98,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Footer */}
         <div className="px-3 py-4 border-t border-white/10 space-y-1">
           <Link href="/dashboard"
-            className="flex items-center gap-3 px-3 py-2 rounded text-sm text-white/40 hover:text-white hover:bg-white/8 transition-colors">
+            className="flex items-center gap-3 px-3 py-2 text-sm text-white/40 hover:text-white hover:bg-white/8 transition-colors">
             <ChevronLeft className="w-4 h-4" />
             User Dashboard
           </Link>
           <Link href="/auth/login"
-            className="flex items-center gap-3 px-3 py-2 rounded text-sm text-white/40 hover:text-white hover:bg-white/8 transition-colors">
+            className="flex items-center gap-3 px-3 py-2 text-sm text-white/40 hover:text-white hover:bg-white/8 transition-colors">
             <LogOut className="w-4 h-4" />
             Sign Out
           </Link>

@@ -55,7 +55,7 @@ export default async function AdminTrainersPage() {
       )}
 
       {trainers.length === 0 && (
-        <div className="bg-white rounded-xl border border-[#E8E4DC] p-12 text-center text-[#6B8F9E]">
+        <div className="bg-white rounded-none border border-[#E8E4DC] p-12 text-center text-[#6B8F9E]">
           No trainers yet
         </div>
       )}
@@ -71,10 +71,10 @@ function Section({ title, color, children }: { title: string; color: string; chi
   }
   return (
     <div className="space-y-3">
-      <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${colors[color]}`}>
+      <div className={`inline-flex px-3 py-1 rounded-none text-xs font-medium border ${colors[color]}`}>
         {title}
       </div>
-      <div className="bg-white rounded-xl border border-[#E8E4DC] overflow-hidden">
+      <div className="bg-white rounded-none border border-[#E8E4DC] overflow-hidden">
         <div className="divide-y divide-[#E8E4DC]">{children}</div>
       </div>
     </div>
@@ -96,7 +96,7 @@ function TrainerRow({ trainer, showActions }: { trainer: any; showActions?: bool
             Agent: <span className="text-[#1C2B39]">{trainer.agent.user.name}</span>
           </span>
           {trainer.accreditations.map((acc: any) => (
-            <span key={acc.id} className="px-2 py-0.5 bg-[#E8F4F8] text-[#1C2B39] rounded text-xs">
+            <span key={acc.id} className="px-2 py-0.5 bg-[#E8F4F8] text-[#1C2B39] rounded-none text-xs">
               {acc.curriculum.name}
             </span>
           ))}

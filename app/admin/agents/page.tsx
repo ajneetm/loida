@@ -22,14 +22,14 @@ export default async function AdminAgentsPage() {
         <h1 className="text-2xl font-semibold text-[#1C2B39]">Agents</h1>
         <Link
           href="/admin/agents/new"
-          className="flex items-center gap-2 bg-[#1C2B39] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#2a3f52] transition-colors"
+          className="flex items-center gap-2 bg-[#1C2B39] text-white px-4 py-2 rounded-none text-sm hover:bg-[#2a3f52] transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add Agent
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-[#E8E4DC] overflow-hidden">
+      <div className="bg-white rounded-none border border-[#E8E4DC] overflow-hidden">
         {agents.length === 0 ? (
           <div className="p-12 text-center text-[#6B8F9E]">
             <Users className="w-10 h-10 mx-auto mb-3 opacity-40" />
@@ -54,7 +54,7 @@ export default async function AdminAgentsPage() {
                     <td className="px-6 py-4 font-medium text-[#1C2B39]">{agent.user.name}</td>
                     <td className="px-6 py-4 text-[#6B8F9E]">{agent.user.email}</td>
                     <td className="px-6 py-4">
-                      <span className="px-2 py-0.5 bg-[#F8F7F4] rounded text-xs font-medium">
+                      <span className="px-2 py-0.5 bg-[#F8F7F4] rounded-none text-xs font-medium">
                         {agent.country === 'QA' ? 'Qatar' : agent.country === 'SA' ? 'Saudi Arabia' : agent.country}
                       </span>
                     </td>
@@ -66,7 +66,7 @@ export default async function AdminAgentsPage() {
                       <span className="text-[#6B8F9E]"> / {agent.trainers.length}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      <span className={`px-2 py-0.5 rounded-none text-xs font-medium ${
                         agent.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                       }`}>
                         {agent.isActive ? 'Active' : 'Inactive'}
