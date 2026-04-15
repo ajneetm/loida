@@ -1,11 +1,13 @@
 // types/index.ts
 
 export type Domain = 'HARMONY' | 'CAREER' | 'BUSINESS'
-export type UserRole = 'USER' | 'COACH' | 'ADMIN'
+export type UserRole = 'USER' | 'COACH' | 'ADMIN' | 'AGENT' | 'TRAINER'
 export type MembershipPlan = 'FREE' | 'PERSONAL' | 'PROFESSIONAL'
 export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'
 export type CoachStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
 export type ProgramType = 'COURSE' | 'COACHING' | 'WORKSHOP' | 'BOOTCAMP'
+export type AgentCountry = 'QA' | 'SA' | 'OTHER'
+export type AccreditationStatus = 'ACTIVE' | 'REVOKED' | 'SUSPENDED'
 
 export interface DomainConfig {
   id: Domain
@@ -74,4 +76,23 @@ export interface DashboardStats {
   assessmentsCompleted: number
   upcomingSessions: number
   overallProgress: number
+}
+
+export interface AgentStats {
+  totalTrainers: number
+  activeTrainers: number
+  totalAccreditations: number
+}
+
+export interface TrainerStats {
+  curricula: number
+  totalAccreditations: number
+}
+
+export interface CurriculumInfo {
+  id: string
+  name: string
+  domain: Domain
+  siteUrl: string
+  description: string
 }

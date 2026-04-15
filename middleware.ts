@@ -1,18 +1,34 @@
 import { auth } from '@/lib/auth'
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
 
 export default auth((req) => {
   const { pathname } = req.nextUrl
   const isLoggedIn   = !!req.auth
+  const role         = (req.auth?.user as any)?.role as string | undefined
 
-  // Protect dashboard routes
-  if (pathname.startsWith('/dashboard') && !isLoggedIn) {
+  // Redirect unauthenticated users
+  const protectedPaths = ['/dashboard', '/agent', '/trainer']
+  if (protectedPaths.some(p => pathname.startsWith(p)) && !isLoggedIn) {
     return NextResponse.redirect(new URL('/auth/login', req.url))
+  }
+
+  // Role-based guards
+  if (pathname.startsWith('/agent') && role !== 'AGENT' && role !== 'ADMIN') {
+    return NextResponse.redirect(new URL('/dashboard', req.url))
+  }
+
+  if (pathname.startsWith('/trainer') && role !== 'TRAINER' && role !== 'ADMIN') {
+    return NextResponse.redirect(new URL('/dashboard', req.url))
+  }
+
+  if (pathname.startsWith('/admin') && role !== 'ADMIN') {
+    return NextResponse.redirect(new URL('/dashboard', req.url))
   }
 
   // Redirect logged-in users away from auth pages
   if ((pathname.startsWith('/auth/login') || pathname.startsWith('/auth/signup')) && isLoggedIn) {
+    if (role === 'AGENT')   return NextResponse.redirect(new URL('/agent', req.url))
+    if (role === 'TRAINER') return NextResponse.redirect(new URL('/trainer', req.url))
     return NextResponse.redirect(new URL('/dashboard', req.url))
   }
 
@@ -20,5 +36,5 @@ export default auth((req) => {
 })
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/auth/login', '/auth/signup'],
+  matcher: ['/dashboard/:path*', '/agent/:path*', '/trainer/:path*', '/admin/:path*', '/auth/login', '/auth/signup'],
 }
