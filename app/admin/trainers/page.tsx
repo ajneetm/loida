@@ -9,12 +9,12 @@ export default async function AdminTrainersPage() {
 
   const trainers = await prisma.trainer.findMany({
     include: {
-      user:  { select: { name: true, email: true, createdAt: true } },
-      agent: { include: { user: { select: { name: true } } } },
+      user:           { select: { name: true, email: true, createdAt: true } },
+      agent:          { include: { user: { select: { name: true } } } },
       accreditations: { include: { curriculum: true } },
     },
     orderBy: [
-      { approvalStatus: 'asc' }, // PENDING first
+      { approvalStatus: 'asc' },
       { createdAt: 'desc' },
     ],
   })
@@ -26,46 +26,37 @@ export default async function AdminTrainersPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-[#1C2B39]">إدارة المدربين</h1>
+        <h1 className="text-2xl font-semibold text-[#1C2B39]">Trainer Management</h1>
         <p className="text-sm text-[#6B8F9E] mt-1">
-          <span className="font-medium text-amber-600">{pending.length} بانتظار الموافقة</span>
+          <span className="font-medium text-amber-600">{pending.length} pending</span>
           {' · '}
-          <span className="font-medium text-green-600">{approved.length} معتمد</span>
+          <span className="font-medium text-green-600">{approved.length} approved</span>
           {' · '}
-          <span className="font-medium text-red-500">{rejected.length} مرفوض</span>
+          <span className="font-medium text-red-500">{rejected.length} rejected</span>
         </p>
       </div>
 
-      {/* Pending */}
       {pending.length > 0 && (
-        <Section title="بانتظار الموافقة" color="amber">
-          {pending.map(t => (
-            <TrainerRow key={t.id} trainer={t} showActions />
-          ))}
+        <Section title="Pending Approval" color="amber">
+          {pending.map(t => <TrainerRow key={t.id} trainer={t} showActions />)}
         </Section>
       )}
 
-      {/* Approved */}
       {approved.length > 0 && (
-        <Section title="معتمدون" color="green">
-          {approved.map(t => (
-            <TrainerRow key={t.id} trainer={t} />
-          ))}
+        <Section title="Approved" color="green">
+          {approved.map(t => <TrainerRow key={t.id} trainer={t} />)}
         </Section>
       )}
 
-      {/* Rejected */}
       {rejected.length > 0 && (
-        <Section title="مرفوضون" color="red">
-          {rejected.map(t => (
-            <TrainerRow key={t.id} trainer={t} />
-          ))}
+        <Section title="Rejected" color="red">
+          {rejected.map(t => <TrainerRow key={t.id} trainer={t} />)}
         </Section>
       )}
 
       {trainers.length === 0 && (
         <div className="bg-white rounded-xl border border-[#E8E4DC] p-12 text-center text-[#6B8F9E]">
-          لا يوجد مدربون بعد
+          No trainers yet
         </div>
       )}
     </div>
@@ -84,9 +75,7 @@ function Section({ title, color, children }: { title: string; color: string; chi
         {title}
       </div>
       <div className="bg-white rounded-xl border border-[#E8E4DC] overflow-hidden">
-        <div className="divide-y divide-[#E8E4DC]">
-          {children}
-        </div>
+        <div className="divide-y divide-[#E8E4DC]">{children}</div>
       </div>
     </div>
   )
@@ -104,7 +93,7 @@ function TrainerRow({ trainer, showActions }: { trainer: any; showActions?: bool
         </div>
         <div className="flex items-center gap-3 mt-1.5 flex-wrap">
           <span className="text-xs text-[#6B8F9E]">
-            وكيل: <span className="text-[#1C2B39]">{trainer.agent.user.name}</span>
+            Agent: <span className="text-[#1C2B39]">{trainer.agent.user.name}</span>
           </span>
           {trainer.accreditations.map((acc: any) => (
             <span key={acc.id} className="px-2 py-0.5 bg-[#E8F4F8] text-[#1C2B39] rounded text-xs">
@@ -112,7 +101,7 @@ function TrainerRow({ trainer, showActions }: { trainer: any; showActions?: bool
             </span>
           ))}
           <span className="text-xs text-[#6B8F9E]">
-            {new Date(trainer.user.createdAt).toLocaleDateString('ar')}
+            {new Date(trainer.user.createdAt).toLocaleDateString()}
           </span>
         </div>
       </div>
