@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
@@ -61,21 +60,6 @@ export default function Navbar() {
     <header className="fixed top-0 inset-x-0 z-[99] bg-[#f0f7f9]">
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[117px]">
 
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 pt-[51px] pb-9">
-          <div className="w-9 h-9 relative">
-            <Image
-              src="/images/logo.png"
-              alt="Loida British"
-              fill
-              className="object-contain"
-            />
-          </div>
-          <div>
-            <p className="text-[#022269] text-[12px] font-bold tracking-[0.15em] leading-none font-['Raleway']">LOIDA BRITISH</p>
-            <p className="text-gray-400 text-[9px] tracking-[0.2em] uppercase mt-0.5 font-['Inter']">Learning & Training</p>
-          </div>
-        </Link>
 
         {/* Desktop nav — ALL CAPS, 14.8px, #444, Inter */}
         <nav className="hidden lg:flex items-center h-[30px]">
