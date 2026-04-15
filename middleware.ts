@@ -21,6 +21,17 @@ export default auth((req) => {
     return NextResponse.redirect(new URL('/dashboard', req.url))
   }
 
+  // Block PENDING trainers from accessing /trainer
+  if (pathname.startsWith('/trainer') && role === 'TRAINER') {
+    const approvalStatus = (req.auth?.user as any)?.approvalStatus
+    if (approvalStatus === 'PENDING') {
+      return NextResponse.redirect(new URL('/auth/pending', req.url))
+    }
+    if (approvalStatus === 'REJECTED') {
+      return NextResponse.redirect(new URL('/auth/rejected', req.url))
+    }
+  }
+
   if (pathname.startsWith('/admin') && role !== 'ADMIN') {
     return NextResponse.redirect(new URL('/dashboard', req.url))
   }
