@@ -97,7 +97,7 @@ export default function TakeAssessmentPage({ params }: { params: { id: string } 
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-[10px] font-medium px-2.5 py-1 rounded-full"
+          <span className="text-[10px] font-medium px-2.5 py-1 rounded-none"
             style={{ background: `${color}15`, color }}>
             {getDomainLabel(assessment.domain)}
           </span>
@@ -105,17 +105,17 @@ export default function TakeAssessmentPage({ params }: { params: { id: string } 
         </div>
 
         {/* Progress bar */}
-        <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-stone-100 rounded-none overflow-hidden">
           <div
-            className="h-full rounded-full transition-all duration-500"
+            className="h-full rounded-none transition-all duration-500"
             style={{ width: `${progress}%`, background: color }}
           />
         </div>
       </div>
 
       {/* Question card */}
-      <div className="bg-white rounded-2xl border border-stone-100 p-8 min-h-[320px] flex flex-col">
-        <h2 className="font-display text-2xl text-[#0A1628] font-light leading-snug mb-8">
+      <div className="bg-white rounded-none border border-stone-100 p-8 min-h-[320px] flex flex-col">
+        <h2 className="font-display text-2xl text-[#022269] font-light leading-snug mb-8">
           {q.text}
         </h2>
 
@@ -127,7 +127,7 @@ export default function TakeAssessmentPage({ params }: { params: { id: string } 
                 <button
                   key={opt.value}
                   onClick={() => setAnswer(opt.value)}
-                  className={`w-full text-left px-5 py-3.5 rounded-xl border text-sm transition-all ${
+                  className={`w-full text-left px-5 py-3.5 rounded-none border text-sm transition-all ${
                     answers[q.id] === opt.value
                       ? 'border-2 font-medium'
                       : 'border-stone-200 text-stone-600 hover:border-stone-300'
@@ -152,7 +152,7 @@ export default function TakeAssessmentPage({ params }: { params: { id: string } 
                   <button
                     key={opt.value}
                     onClick={() => toggleMultiple(opt.value)}
-                    className={`w-full text-left px-5 py-3.5 rounded-xl border text-sm transition-all flex items-center gap-3 ${
+                    className={`w-full text-left px-5 py-3.5 rounded-none border text-sm transition-all flex items-center gap-3 ${
                       selected ? 'border-2 font-medium' : 'border-stone-200 text-stone-600 hover:border-stone-300'
                     }`}
                     style={selected ? { borderColor: color, color, background: `${color}08` } : {}}
@@ -176,7 +176,7 @@ export default function TakeAssessmentPage({ params }: { params: { id: string } 
                   <button
                     key={n}
                     onClick={() => setAnswer(String(n))}
-                    className={`w-12 h-12 rounded-xl border-2 text-sm font-medium transition-all ${
+                    className={`w-12 h-12 rounded-none border-2 text-sm font-medium transition-all ${
                       answers[q.id] === String(n) ? 'text-white' : 'border-stone-200 text-stone-500 hover:border-stone-400'
                     }`}
                     style={answers[q.id] === String(n) ? { background: color, borderColor: color } : {}}
@@ -199,7 +199,7 @@ export default function TakeAssessmentPage({ params }: { params: { id: string } 
               onChange={e => setAnswer(e.target.value)}
               rows={4}
               placeholder="Type your answer here…"
-              className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm text-[#0A1628] focus:outline-none resize-none placeholder:text-stone-300"
+              className="w-full border border-stone-200 rounded-none px-4 py-3 text-sm text-[#022269] focus:outline-none resize-none placeholder:text-stone-300"
               style={{ borderColor: answers[q.id] ? `${color}50` : undefined }}
             />
           )}
@@ -221,7 +221,7 @@ export default function TakeAssessmentPage({ params }: { params: { id: string } 
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="text-white text-sm font-medium px-6 py-2.5 rounded-full transition-colors disabled:opacity-50"
+              className="text-white text-sm font-medium px-6 py-2.5 rounded-none transition-colors disabled:opacity-50"
               style={{ background: color }}
             >
               {submitting ? 'Submitting…' : 'Submit Assessment →'}
@@ -230,7 +230,7 @@ export default function TakeAssessmentPage({ params }: { params: { id: string } 
             <button
               onClick={handleNext}
               disabled={!canNext}
-              className="text-white text-sm font-medium px-6 py-2.5 rounded-full transition-all disabled:opacity-40"
+              className="text-white text-sm font-medium px-6 py-2.5 rounded-none transition-all disabled:opacity-40"
               style={{ background: color }}
             >
               Next →
@@ -245,7 +245,7 @@ export default function TakeAssessmentPage({ params }: { params: { id: string } 
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className="w-2 h-2 rounded-full transition-all"
+            className="w-2 h-2 rounded-none transition-all"
             style={{
               background: i === current ? color : answers[questions[i].id] ? `${color}50` : '#e7e5e4',
               width: i === current ? '24px' : '8px',

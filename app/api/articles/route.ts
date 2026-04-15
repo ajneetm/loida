@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       excerpt:     parsed.data.excerpt,
       content:     parsed.data.content,
       domain:      parsed.data.domain,
-      tags:        parsed.data.tags,
+      tags:        JSON.stringify(parsed.data.tags),
       authorId:    session.user.id as string,
       isPublished: parsed.data.publish,
       publishedAt: parsed.data.publish ? new Date() : null,

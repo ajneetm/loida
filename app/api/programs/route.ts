@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Invalid input', errors: parsed.error.flatten() }, { status: 400 })
   }
 
-  const program = await prisma.program.create({ data: parsed.data })
+  const { tags, ...rest } = parsed.data
+  const program = await prisma.program.create({ data: { ...rest, tags: JSON.stringify(tags) } })
   return NextResponse.json(program, { status: 201 })
 }

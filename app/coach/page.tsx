@@ -46,10 +46,10 @@ export default async function CoachDashboardPage() {
   const completed = bookings.filter(b => b.status === 'COMPLETED')
 
   const stats = [
-    { label: 'Upcoming Sessions', value: upcoming.length,       color: '#B8973A' },
+    { label: 'Upcoming Sessions', value: upcoming.length,       color: '#c71430' },
     { label: 'Total Sessions',    value: coach.totalSessions,   color: '#6B8F9E' },
     { label: 'Unique Clients',    value: clients.length,        color: '#2C4A3E' },
-    { label: 'Programs',          value: programs.length,       color: '#B8973A' },
+    { label: 'Programs',          value: programs.length,       color: '#c71430' },
   ]
 
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -58,17 +58,17 @@ export default async function CoachDashboardPage() {
     <div className="max-w-6xl mx-auto space-y-8">
 
       {/* Coach welcome */}
-      <div className="bg-[#0A1628] rounded-2xl p-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_50%,#1A2B4A,transparent)]" />
+      <div className="bg-[#022269] rounded-none p-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_50%,#011344,transparent)]" />
         <div className="relative z-10 flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <p className="text-[#B8973A] text-xs tracking-[0.2em] uppercase mb-2">Coach Dashboard</p>
+            <p className="text-[#c71430] text-xs tracking-[0.2em] uppercase mb-2">Coach Dashboard</p>
             <h2 className="font-display text-3xl text-white font-light mb-2">
               Welcome, {coach.user.name?.split(' ')[0]}
             </h2>
             <div className="flex flex-wrap gap-1.5 mt-3">
               {(JSON.parse(coach.domains as string) as string[]).map(d => (
-                <span key={d} className="text-[10px] font-medium px-2.5 py-1 rounded-full"
+                <span key={d} className="text-[10px] font-medium px-2.5 py-1 rounded-none"
                   style={{ background: `${getDomainColor(d)}30`, color: getDomainColor(d) }}>
                   {getDomainLabel(d)}
                 </span>
@@ -88,9 +88,9 @@ export default async function CoachDashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map(s => (
-          <div key={s.label} className="bg-white rounded-2xl border border-stone-100 p-6">
+          <div key={s.label} className="bg-white rounded-none border border-stone-100 p-6">
             <p className="text-stone-400 text-xs tracking-wide mb-3">{s.label}</p>
-            <p className="font-display text-4xl text-[#0A1628] font-light"
+            <p className="font-display text-4xl text-[#022269] font-light"
               style={{ color: s.value > 0 ? s.color : undefined }}>
               {s.value}
             </p>
@@ -101,10 +101,10 @@ export default async function CoachDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Upcoming bookings */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-stone-100 p-6">
+        <div className="lg:col-span-2 bg-white rounded-none border border-stone-100 p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="font-display text-xl text-[#0A1628]">Upcoming Sessions</h3>
-            <Link href="/coach/sessions" className="text-xs text-[#B8973A] hover:underline">View all</Link>
+            <h3 className="font-display text-xl text-[#022269]">Upcoming Sessions</h3>
+            <Link href="/coach/sessions" className="text-xs text-[#c71430] hover:underline">View all</Link>
           </div>
 
           {upcoming.length === 0 ? (
@@ -115,17 +115,17 @@ export default async function CoachDashboardPage() {
           ) : (
             <div className="space-y-3">
               {upcoming.slice(0, 6).map(b => (
-                <div key={b.id} className="flex items-center gap-4 p-3 rounded-xl bg-stone-50">
-                  <div className="w-10 h-10 rounded-xl bg-[#0A1628] flex items-center justify-center text-white font-display flex-shrink-0">
+                <div key={b.id} className="flex items-center gap-4 p-3 rounded-none bg-stone-50">
+                  <div className="w-10 h-10 rounded-none bg-[#022269] flex items-center justify-center text-white font-display flex-shrink-0">
                     {b.user.name?.charAt(0) ?? 'C'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[#0A1628] text-sm font-medium">{b.user.name}</p>
+                    <p className="text-[#022269] text-sm font-medium">{b.user.name}</p>
                     <p className="text-stone-400 text-xs">
                       {formatDate(b.scheduledAt)} · {b.duration} min
                     </p>
                   </div>
-                  <span className={`text-[10px] font-medium px-2.5 py-1 rounded-full border flex-shrink-0 ${
+                  <span className={`text-[10px] font-medium px-2.5 py-1 rounded-none border flex-shrink-0 ${
                     b.status === 'CONFIRMED' ? 'bg-green-50 text-green-600 border-green-100' :
                     'bg-amber-50 text-amber-600 border-amber-100'
                   }`}>
@@ -138,10 +138,10 @@ export default async function CoachDashboardPage() {
         </div>
 
         {/* Availability overview */}
-        <div className="bg-white rounded-2xl border border-stone-100 p-6">
+        <div className="bg-white rounded-none border border-stone-100 p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="font-display text-xl text-[#0A1628]">Availability</h3>
-            <Link href="/coach/availability" className="text-xs text-[#B8973A] hover:underline">Edit</Link>
+            <h3 className="font-display text-xl text-[#022269]">Availability</h3>
+            <Link href="/coach/availability" className="text-xs text-[#c71430] hover:underline">Edit</Link>
           </div>
           <div className="space-y-2">
             {days.map((day, i) => {
@@ -150,7 +150,7 @@ export default async function CoachDashboardPage() {
                 <div key={day} className="flex items-center justify-between py-2 border-b border-stone-50">
                   <span className="text-stone-500 text-sm w-10">{day}</span>
                   {slot ? (
-                    <span className="text-[#0A1628] text-xs font-medium">
+                    <span className="text-[#022269] text-xs font-medium">
                       {slot.startTime} – {slot.endTime}
                     </span>
                   ) : (
@@ -164,32 +164,32 @@ export default async function CoachDashboardPage() {
       </div>
 
       {/* Programs */}
-      <div className="bg-white rounded-2xl border border-stone-100 p-6">
+      <div className="bg-white rounded-none border border-stone-100 p-6">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-display text-xl text-[#0A1628]">My Programs</h3>
-          <Link href="/admin/programs/new" className="text-xs bg-[#0A1628] text-white px-4 py-2 rounded-full hover:bg-[#1A2B4A] transition-colors">
+          <h3 className="font-display text-xl text-[#022269]">My Programs</h3>
+          <Link href="/admin/programs/new" className="text-xs bg-[#022269] text-white px-4 py-2 rounded-none hover:bg-[#011344] transition-colors">
             + Create Program
           </Link>
         </div>
         {programs.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-stone-400 text-sm mb-3">No programs created yet.</p>
-            <Link href="/admin/programs/new" className="text-xs text-[#B8973A] hover:underline">Create your first program →</Link>
+            <Link href="/admin/programs/new" className="text-xs text-[#c71430] hover:underline">Create your first program →</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {programs.map(p => (
-              <div key={p.id} className="border border-stone-100 rounded-xl p-4 hover:border-stone-200 transition-colors">
+              <div key={p.id} className="border border-stone-100 rounded-none p-4 hover:border-stone-200 transition-colors">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-none"
                     style={{ background: `${getDomainColor(p.domain)}15`, color: getDomainColor(p.domain) }}>
                     {getDomainLabel(p.domain)}
                   </span>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full ${p.isPublished ? 'bg-green-50 text-green-500' : 'bg-stone-100 text-stone-400'}`}>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-none ${p.isPublished ? 'bg-green-50 text-green-500' : 'bg-stone-100 text-stone-400'}`}>
                     {p.isPublished ? 'Live' : 'Draft'}
                   </span>
                 </div>
-                <p className="text-[#0A1628] font-medium text-sm">{p.title}</p>
+                <p className="text-[#022269] font-medium text-sm">{p.title}</p>
                 <p className="text-stone-400 text-xs mt-1">{p._count.enrollments} enrolled</p>
               </div>
             ))}
@@ -199,18 +199,18 @@ export default async function CoachDashboardPage() {
 
       {/* Recent completed sessions */}
       {completed.length > 0 && (
-        <div className="bg-white rounded-2xl border border-stone-100 p-6">
-          <h3 className="font-display text-xl text-[#0A1628] mb-5">
+        <div className="bg-white rounded-none border border-stone-100 p-6">
+          <h3 className="font-display text-xl text-[#022269] mb-5">
             Recent Completed <span className="text-stone-300 text-lg">({completed.length})</span>
           </h3>
           <div className="space-y-2">
             {completed.slice(0, 5).map(b => (
               <div key={b.id} className="flex items-center gap-4 py-3 border-b border-stone-50">
-                <div className="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center text-stone-500 text-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-none bg-stone-100 flex items-center justify-center text-stone-500 text-sm flex-shrink-0">
                   {b.user.name?.charAt(0) ?? 'C'}
                 </div>
                 <div className="flex-1">
-                  <p className="text-[#0A1628] text-sm">{b.user.name}</p>
+                  <p className="text-[#022269] text-sm">{b.user.name}</p>
                   <p className="text-stone-400 text-xs">{formatDate(b.scheduledAt)} · {b.duration} min</p>
                 </div>
                 <span className="text-stone-300 text-xs">✓ Completed</span>

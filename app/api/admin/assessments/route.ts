@@ -29,9 +29,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: parsed.error.errors[0]?.message ?? 'Invalid input' }, { status: 400 })
   }
 
+  const { questions, ...rest } = parsed.data
   const assessment = await prisma.assessment.create({
     data: {
-      ...parsed.data,
+      ...rest,
+      questions: JSON.stringify(questions),
       isActive: true,
     },
   })

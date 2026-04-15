@@ -39,7 +39,7 @@ export default function LoginPage() {
       {/* Google */}
       <button
         onClick={handleGoogle}
-        className="w-full flex items-center justify-center gap-3 border border-white/12 text-white/70 hover:text-white hover:border-white/25 rounded-xl py-3 text-sm transition-all mb-6"
+        className="w-full flex items-center justify-center gap-3 border border-white/12 text-white/70 hover:text-white hover:border-white/25 rounded-none py-3 text-sm transition-all mb-6"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -60,7 +60,7 @@ export default function LoginPage() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm">
+          <div className="bg-red-500/10 border border-red-500/20 rounded-none px-4 py-3 text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -73,14 +73,14 @@ export default function LoginPage() {
             value={form.email}
             onChange={e => setForm({ ...form, email: e.target.value })}
             placeholder="you@example.com"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#B8973A]/50 transition-colors"
+            className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#c71430]/50 transition-colors"
           />
         </div>
 
         <div>
           <div className="flex justify-between mb-1.5">
             <label className="text-white/50 text-xs tracking-wide">Password</label>
-            <Link href="/auth/forgot" className="text-white/30 text-xs hover:text-[#B8973A] transition-colors">
+            <Link href="/auth/forgot" className="text-white/30 text-xs hover:text-[#c71430] transition-colors">
               Forgot password?
             </Link>
           </div>
@@ -90,14 +90,14 @@ export default function LoginPage() {
             value={form.password}
             onChange={e => setForm({ ...form, password: e.target.value })}
             placeholder="••••••••"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#B8973A]/50 transition-colors"
+            className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#c71430]/50 transition-colors"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#B8973A] hover:bg-[#D4B05A] disabled:opacity-50 text-white py-3 rounded-xl text-sm font-medium tracking-wide transition-colors mt-2"
+          className="w-full bg-[#c71430] hover:bg-[#e8203c] disabled:opacity-50 text-white py-3 rounded-none text-sm font-medium tracking-wide transition-colors mt-2"
         >
           {loading ? 'Signing in…' : 'Sign In'}
         </button>
@@ -105,7 +105,7 @@ export default function LoginPage() {
 
       <p className="text-center text-white/30 text-sm mt-6">
         Don&apos;t have an account?{' '}
-        <Link href="/auth/signup" className="text-[#B8973A] hover:text-[#D4B05A] transition-colors">
+        <Link href="/auth/signup" className="text-[#c71430] hover:text-[#e8203c] transition-colors">
           Start your journey
         </Link>
       </p>

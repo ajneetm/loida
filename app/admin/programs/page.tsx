@@ -16,18 +16,18 @@ export default async function AdminProgramsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl text-[#0A1628] font-light">Programs</h1>
+          <h1 className="font-display text-3xl text-[#022269] font-light">Programs</h1>
           <p className="text-stone-400 text-sm mt-1">{programs.length} programs in the system</p>
         </div>
         <Link
           href="/admin/programs/new"
-          className="bg-[#0A1628] hover:bg-[#1A2B4A] text-white text-sm font-medium px-5 py-2.5 rounded-full transition-colors"
+          className="bg-[#022269] hover:bg-[#011344] text-white text-sm font-medium px-5 py-2.5 rounded-none transition-colors"
         >
           + New Program
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl border border-stone-100 overflow-hidden">
+      <div className="bg-white rounded-none border border-stone-100 overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-stone-50">
@@ -41,23 +41,23 @@ export default async function AdminProgramsPage() {
               <tr key={p.id} className="hover:bg-stone-50/40 transition-colors">
                 <td className="px-6 py-4">
                   <div>
-                    <p className="text-[#0A1628] text-sm font-medium">{p.title}</p>
+                    <p className="text-[#022269] text-sm font-medium">{p.title}</p>
                     {p.coach && <p className="text-stone-400 text-xs mt-0.5">by {p.coach.user.name}</p>}
                     {p.duration && <p className="text-stone-300 text-xs">{p.duration}</p>}
                   </div>
                 </td>
                 <td className="px-5 py-4">
-                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-none"
                     style={{ background: `${getDomainColor(p.domain)}15`, color: getDomainColor(p.domain) }}>
                     {getDomainLabel(p.domain)}
                   </span>
                 </td>
                 <td className="px-5 py-4">
-                  <span className="text-[10px] bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] bg-stone-100 text-stone-500 px-2 py-0.5 rounded-none">
                     {p.type.charAt(0) + p.type.slice(1).toLowerCase()}
                   </span>
                 </td>
-                <td className="px-5 py-4 text-[#0A1628] text-sm font-display">
+                <td className="px-5 py-4 text-[#022269] text-sm font-display">
                   {p.price === 0 ? 'Free' : formatCurrency(p.price, p.currency)}
                 </td>
                 <td className="px-5 py-4 text-stone-500 text-sm">{p._count.enrollments}</td>

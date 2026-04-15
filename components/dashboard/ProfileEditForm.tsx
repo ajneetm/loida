@@ -49,13 +49,13 @@ export default function ProfileEditForm({ user }: Props) {
     setSaving(false)
   }
 
-  const inputCls = 'w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-[#0A1628] focus:outline-none focus:border-[#B8973A]/50 transition-colors placeholder:text-stone-300'
+  const inputCls = 'w-full border border-stone-200 rounded-none px-4 py-2.5 text-sm text-[#022269] focus:outline-none focus:border-[#c71430]/50 transition-colors placeholder:text-stone-300'
   const labelCls = 'block text-stone-400 text-xs tracking-wide mb-1.5'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="bg-red-50 border border-red-100 text-red-500 text-sm px-4 py-3 rounded-xl">{error}</div>
+        <div className="bg-red-50 border border-red-100 text-red-500 text-sm px-4 py-3 rounded-none">{error}</div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -97,7 +97,7 @@ export default function ProfileEditForm({ user }: Props) {
         <button
           type="submit"
           disabled={saving}
-          className="bg-[#0A1628] hover:bg-[#1A2B4A] disabled:opacity-50 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-colors"
+          className="bg-[#022269] hover:bg-[#011344] disabled:opacity-50 text-white text-sm font-medium px-6 py-2.5 rounded-none transition-colors"
         >
           {saving ? 'Saving…' : 'Save Changes'}
         </button>

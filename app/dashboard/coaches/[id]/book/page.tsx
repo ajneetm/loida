@@ -113,20 +113,20 @@ export default function BookCoachPage({ params }: { params: { id: string } }) {
 
         {/* Coach info */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-white rounded-2xl border border-stone-100 p-6">
+          <div className="bg-white rounded-none border border-stone-100 p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-[#0A1628] flex items-center justify-center text-white font-display text-2xl flex-shrink-0">
+              <div className="w-16 h-16 rounded-none bg-[#022269] flex items-center justify-center text-white font-display text-2xl flex-shrink-0">
                 {coach.user.name.charAt(0)}
               </div>
               <div>
-                <h2 className="font-display text-xl text-[#0A1628] font-medium">{coach.user.name}</h2>
+                <h2 className="font-display text-xl text-[#022269] font-medium">{coach.user.name}</h2>
                 {coach.rating && <p className="text-amber-500 text-sm">★ {coach.rating.toFixed(1)}</p>}
               </div>
             </div>
 
             <div className="flex flex-wrap gap-1.5 mb-4">
               {coach.domains.map(d => (
-                <span key={d} className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+                <span key={d} className="text-[10px] px-2 py-0.5 rounded-none font-medium"
                   style={{ background: `${getDomainColor(d)}15`, color: getDomainColor(d) }}>
                   {getDomainLabel(d)}
                 </span>
@@ -138,16 +138,16 @@ export default function BookCoachPage({ params }: { params: { id: string } }) {
             {coach.specialties.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {coach.specialties.slice(0, 4).map(s => (
-                  <span key={s} className="text-[10px] bg-stone-50 border border-stone-100 text-stone-500 px-2 py-0.5 rounded-full">{s}</span>
+                  <span key={s} className="text-[10px] bg-stone-50 border border-stone-100 text-stone-500 px-2 py-0.5 rounded-none">{s}</span>
                 ))}
               </div>
             )}
           </div>
 
           {/* Price */}
-          <div className="bg-white rounded-2xl border border-stone-100 p-6">
+          <div className="bg-white rounded-none border border-stone-100 p-6">
             <p className="text-stone-400 text-xs tracking-wide mb-2">Session Price</p>
-            <p className="font-display text-3xl text-[#0A1628]">
+            <p className="font-display text-3xl text-[#022269]">
               {coach.hourlyRate
                 ? formatCurrency(coach.hourlyRate * (duration / 60), coach.currency)
                 : 'Free'}
@@ -160,13 +160,13 @@ export default function BookCoachPage({ params }: { params: { id: string } }) {
         <div className="lg:col-span-2 space-y-5">
 
           {/* Duration */}
-          <div className="bg-white rounded-2xl border border-stone-100 p-6">
-            <h3 className="font-display text-lg text-[#0A1628] mb-4">Session Duration</h3>
+          <div className="bg-white rounded-none border border-stone-100 p-6">
+            <h3 className="font-display text-lg text-[#022269] mb-4">Session Duration</h3>
             <div className="flex flex-wrap gap-2">
               {durations.map(d => (
                 <button key={d.value} onClick={() => { setDuration(d.value); setSlot(null) }}
-                  className={`px-4 py-2 rounded-xl text-sm border transition-all ${
-                    duration === d.value ? 'bg-[#0A1628] text-white border-[#0A1628]' : 'border-stone-200 text-stone-500 hover:border-stone-400'
+                  className={`px-4 py-2 rounded-none text-sm border transition-all ${
+                    duration === d.value ? 'bg-[#022269] text-white border-[#022269]' : 'border-stone-200 text-stone-500 hover:border-stone-400'
                   }`}>
                   {d.label}
                 </button>
@@ -175,8 +175,8 @@ export default function BookCoachPage({ params }: { params: { id: string } }) {
           </div>
 
           {/* Day picker */}
-          <div className="bg-white rounded-2xl border border-stone-100 p-6">
-            <h3 className="font-display text-lg text-[#0A1628] mb-4">Select a Day</h3>
+          <div className="bg-white rounded-none border border-stone-100 p-6">
+            <h3 className="font-display text-lg text-[#022269] mb-4">Select a Day</h3>
             <div className="grid grid-cols-7 gap-1.5">
               {futureDays.map(day => {
                 const avail = coach.availability.some(a => a.dayOfWeek === day.getDay())
@@ -184,9 +184,9 @@ export default function BookCoachPage({ params }: { params: { id: string } }) {
                 return (
                   <button key={day.toISOString()} onClick={() => { if (avail) { setDay(day); setSlot(null) } }}
                     disabled={!avail}
-                    className={`aspect-square flex flex-col items-center justify-center rounded-xl text-xs transition-all ${
-                      sel     ? 'bg-[#0A1628] text-white' :
-                      avail   ? 'border border-stone-200 text-stone-600 hover:border-[#B8973A] hover:text-[#B8973A]' :
+                    className={`aspect-square flex flex-col items-center justify-center rounded-none text-xs transition-all ${
+                      sel     ? 'bg-[#022269] text-white' :
+                      avail   ? 'border border-stone-200 text-stone-600 hover:border-[#c71430] hover:text-[#c71430]' :
                                 'text-stone-200 cursor-not-allowed'
                     }`}>
                     <span className="text-[9px] uppercase">{days[day.getDay()]}</span>
@@ -199,8 +199,8 @@ export default function BookCoachPage({ params }: { params: { id: string } }) {
 
           {/* Time slots */}
           {selectedDay && (
-            <div className="bg-white rounded-2xl border border-stone-100 p-6">
-              <h3 className="font-display text-lg text-[#0A1628] mb-4">
+            <div className="bg-white rounded-none border border-stone-100 p-6">
+              <h3 className="font-display text-lg text-[#022269] mb-4">
                 Available Times — {selectedDay.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
               </h3>
               {timeSlots.length === 0 ? (
@@ -209,10 +209,10 @@ export default function BookCoachPage({ params }: { params: { id: string } }) {
                 <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                   {timeSlots.map(slot => (
                     <button key={slot} onClick={() => setSlot(slot)}
-                      className={`py-2 rounded-xl text-xs font-medium border transition-all ${
+                      className={`py-2 rounded-none text-xs font-medium border transition-all ${
                         selectedSlot === slot
-                          ? 'bg-[#B8973A] text-white border-[#B8973A]'
-                          : 'border-stone-200 text-stone-600 hover:border-[#B8973A] hover:text-[#B8973A]'
+                          ? 'bg-[#c71430] text-white border-[#c71430]'
+                          : 'border-stone-200 text-stone-600 hover:border-[#c71430] hover:text-[#c71430]'
                       }`}>
                       {slot}
                     </button>
@@ -224,32 +224,32 @@ export default function BookCoachPage({ params }: { params: { id: string } }) {
 
           {/* Notes + submit */}
           {selectedSlot && (
-            <div className="bg-white rounded-2xl border border-stone-100 p-6 space-y-4">
-              <h3 className="font-display text-lg text-[#0A1628]">Session Notes</h3>
+            <div className="bg-white rounded-none border border-stone-100 p-6 space-y-4">
+              <h3 className="font-display text-lg text-[#022269]">Session Notes</h3>
               <textarea
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 rows={3}
                 placeholder="What would you like to focus on in this session? (optional)"
-                className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm text-[#0A1628] focus:outline-none focus:border-[#B8973A]/50 resize-none placeholder:text-stone-300"
+                className="w-full border border-stone-200 rounded-none px-4 py-3 text-sm text-[#022269] focus:outline-none focus:border-[#c71430]/50 resize-none placeholder:text-stone-300"
               />
 
               {/* Summary */}
-              <div className="bg-stone-50 rounded-xl p-4 space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-stone-400">Coach</span><span className="text-[#0A1628] font-medium">{coach.user.name}</span></div>
-                <div className="flex justify-between"><span className="text-stone-400">Date</span><span className="text-[#0A1628] font-medium">{selectedDay!.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div>
-                <div className="flex justify-between"><span className="text-stone-400">Time</span><span className="text-[#0A1628] font-medium">{selectedSlot}</span></div>
-                <div className="flex justify-between"><span className="text-stone-400">Duration</span><span className="text-[#0A1628] font-medium">{durations.find(d => d.value === duration)?.label}</span></div>
+              <div className="bg-stone-50 rounded-none p-4 space-y-2 text-sm">
+                <div className="flex justify-between"><span className="text-stone-400">Coach</span><span className="text-[#022269] font-medium">{coach.user.name}</span></div>
+                <div className="flex justify-between"><span className="text-stone-400">Date</span><span className="text-[#022269] font-medium">{selectedDay!.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div>
+                <div className="flex justify-between"><span className="text-stone-400">Time</span><span className="text-[#022269] font-medium">{selectedSlot}</span></div>
+                <div className="flex justify-between"><span className="text-stone-400">Duration</span><span className="text-[#022269] font-medium">{durations.find(d => d.value === duration)?.label}</span></div>
                 <div className="flex justify-between border-t border-stone-200 pt-2 mt-2">
                   <span className="text-stone-600 font-medium">Total</span>
-                  <span className="text-[#0A1628] font-display text-lg">{coach.hourlyRate ? formatCurrency(coach.hourlyRate * (duration / 60), coach.currency) : 'Free'}</span>
+                  <span className="text-[#022269] font-display text-lg">{coach.hourlyRate ? formatCurrency(coach.hourlyRate * (duration / 60), coach.currency) : 'Free'}</span>
                 </div>
               </div>
 
               {error && <p className="text-red-400 text-sm">{error}</p>}
 
               <button onClick={handleBook} disabled={submitting}
-                className="w-full bg-[#B8973A] hover:bg-[#D4B05A] disabled:opacity-50 text-white text-sm font-medium py-3.5 rounded-xl transition-colors">
+                className="w-full bg-[#c71430] hover:bg-[#e8203c] disabled:opacity-50 text-white text-sm font-medium py-3.5 rounded-none transition-colors">
                 {submitting ? 'Booking…' : 'Confirm Booking →'}
               </button>
             </div>

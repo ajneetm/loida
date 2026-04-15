@@ -35,17 +35,17 @@ export default async function ProgramsPage({
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       {/* Filters */}
-      <div className="bg-white rounded-2xl border border-stone-100 p-5 flex flex-wrap gap-6">
+      <div className="bg-white rounded-none border border-stone-100 p-5 flex flex-wrap gap-6">
         <div>
           <p className="text-stone-400 text-xs tracking-wide mb-2 uppercase">Domain</p>
           <div className="flex flex-wrap gap-2">
             <Link href="/dashboard/programs"
-              className={`px-3 py-1.5 rounded-full text-xs transition-all ${!domain ? 'bg-[#0A1628] text-white' : 'border border-stone-200 text-stone-500 hover:border-stone-400'}`}>
+              className={`px-3 py-1.5 rounded-none text-xs transition-all ${!domain ? 'bg-[#022269] text-white' : 'border border-stone-200 text-stone-500 hover:border-stone-400'}`}>
               All
             </Link>
             {domains.map(d => (
               <Link key={d} href={`/dashboard/programs?domain=${d}`}
-                className="px-3 py-1.5 rounded-full text-xs border transition-all hover:text-white"
+                className="px-3 py-1.5 rounded-none text-xs border transition-all hover:text-white"
                 style={domain === d
                   ? { background: getDomainColor(d), color: '#fff', borderColor: getDomainColor(d) }
                   : { borderColor: '#e7e5e4', color: '#78716c' }
@@ -60,8 +60,8 @@ export default async function ProgramsPage({
           <div className="flex flex-wrap gap-2">
             {types.map(t => (
               <Link key={t} href={`/dashboard/programs${domain ? `?domain=${domain}&` : '?'}type=${t}`}
-                className={`px-3 py-1.5 rounded-full text-xs border transition-all ${
-                  type === t ? 'bg-[#0A1628] text-white border-[#0A1628]' : 'border-stone-200 text-stone-500 hover:border-stone-400'
+                className={`px-3 py-1.5 rounded-none text-xs border transition-all ${
+                  type === t ? 'bg-[#022269] text-white border-[#022269]' : 'border-stone-200 text-stone-500 hover:border-stone-400'
                 }`}>
                 {t.charAt(0) + t.slice(1).toLowerCase()}
               </Link>
@@ -77,7 +77,7 @@ export default async function ProgramsPage({
 
       {/* Grid */}
       {programs.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-2xl border border-stone-100">
+        <div className="text-center py-20 bg-white rounded-none border border-stone-100">
           <p className="text-stone-400 text-sm">No programs found. Try adjusting your filters.</p>
         </div>
       ) : (
@@ -87,7 +87,7 @@ export default async function ProgramsPage({
             const color    = getDomainColor(program.domain)
             return (
               <div key={program.id}
-                className="bg-white rounded-2xl border border-stone-100 overflow-hidden hover:border-stone-200 hover:shadow-md transition-all duration-300 flex flex-col group">
+                className="bg-white rounded-none border border-stone-100 overflow-hidden hover:border-stone-200 hover:shadow-md transition-all duration-300 flex flex-col group">
                 {/* Top accent */}
                 <div className="h-1 w-full" style={{ background: color }} />
 
@@ -103,7 +103,7 @@ export default async function ProgramsPage({
                     </span>
                   </div>
 
-                  <h3 className="font-display text-lg text-[#0A1628] font-medium leading-snug mb-2 group-hover:text-[#B8973A] transition-colors">
+                  <h3 className="font-display text-lg text-[#022269] font-medium leading-snug mb-2 group-hover:text-[#c71430] transition-colors">
                     {program.title}
                   </h3>
                   <p className="text-stone-500 text-sm leading-relaxed flex-1 line-clamp-3">
@@ -119,18 +119,18 @@ export default async function ProgramsPage({
 
                   {/* Price + CTA */}
                   <div className="flex items-center justify-between">
-                    <p className="font-display text-xl text-[#0A1628]">
+                    <p className="font-display text-xl text-[#022269]">
                       {program.price === 0 ? 'Free' : formatCurrency(program.price, program.currency)}
                     </p>
                     {enrolled ? (
                       <Link href={`/dashboard/programs/${program.id}`}
-                        className="text-xs font-medium px-4 py-2 rounded-full border-2 transition-all"
+                        className="text-xs font-medium px-4 py-2 rounded-none border-2 transition-all"
                         style={{ borderColor: color, color }}>
                         Continue →
                       </Link>
                     ) : (
                       <Link href={`/dashboard/programs/${program.id}`}
-                        className="text-xs font-medium px-4 py-2 rounded-full text-white transition-all hover:opacity-90"
+                        className="text-xs font-medium px-4 py-2 rounded-none text-white transition-all hover:opacity-90"
                         style={{ background: color }}>
                         Enroll Now
                       </Link>

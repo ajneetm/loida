@@ -67,36 +67,36 @@ export default function AvailabilityPage() {
     setTimeout(() => setSaved(false), 3000)
   }
 
-  const inputCls = 'border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-[#0A1628] focus:outline-none focus:border-[#B8973A]/50 transition-colors'
+  const inputCls = 'border border-stone-200 rounded-none px-2 py-1.5 text-sm text-[#022269] focus:outline-none focus:border-[#c71430]/50 transition-colors'
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="font-display text-3xl text-[#0A1628] font-light">Availability</h1>
+        <h1 className="font-display text-3xl text-[#022269] font-light">Availability</h1>
         <p className="text-stone-400 text-sm mt-1">Set the days and hours when clients can book sessions with you.</p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-stone-100 p-6 space-y-3">
+      <div className="bg-white rounded-none border border-stone-100 p-6 space-y-3">
         {loading ? (
           <div className="space-y-3 animate-pulse">
-            {[1,2,3,4,5,6,7].map(i => <div key={i} className="h-14 bg-stone-50 rounded-xl" />)}
+            {[1,2,3,4,5,6,7].map(i => <div key={i} className="h-14 bg-stone-50 rounded-none" />)}
           </div>
         ) : (
           slots.map((slot, idx) => (
             <div key={slot.dayOfWeek}
-              className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${
+              className={`flex items-center gap-4 p-4 rounded-none border transition-all ${
                 slot.isActive ? 'border-stone-200 bg-stone-50/50' : 'border-stone-100 opacity-50'
               }`}>
 
               {/* Toggle */}
               <button onClick={() => toggle(idx)}
-                className={`relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors ${slot.isActive ? 'bg-[#B8973A]' : 'bg-stone-200'}`}>
-                <span className="inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform"
+                className={`relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-none transition-colors ${slot.isActive ? 'bg-[#c71430]' : 'bg-stone-200'}`}>
+                <span className="inline-block h-3.5 w-3.5 rounded-none bg-white shadow transition-transform"
                   style={{ transform: slot.isActive ? 'translateX(18px)' : 'translateX(2px)' }} />
               </button>
 
               {/* Day label */}
-              <span className="text-[#0A1628] text-sm font-medium w-24 flex-shrink-0">
+              <span className="text-[#022269] text-sm font-medium w-24 flex-shrink-0">
                 {days[idx].label}
               </span>
 
@@ -139,14 +139,14 @@ export default function AvailabilityPage() {
         <button
           onClick={handleSave}
           disabled={saving || loading}
-          className="bg-[#B8973A] hover:bg-[#D4B05A] disabled:opacity-50 text-white text-sm font-medium px-8 py-3 rounded-xl transition-colors"
+          className="bg-[#c71430] hover:bg-[#e8203c] disabled:opacity-50 text-white text-sm font-medium px-8 py-3 rounded-none transition-colors"
         >
           {saving ? 'Saving…' : 'Save Availability'}
         </button>
         {saved && <p className="text-green-500 text-sm">✓ Availability saved</p>}
       </div>
 
-      <div className="bg-stone-50 rounded-2xl border border-stone-100 p-5 text-sm text-stone-400 leading-relaxed">
+      <div className="bg-stone-50 rounded-none border border-stone-100 p-5 text-sm text-stone-400 leading-relaxed">
         <p className="font-medium text-stone-500 mb-1">How it works</p>
         <p>Clients will only see time slots within your available hours. Each slot is {60} minutes by default. You can override this when confirming a booking.</p>
       </div>

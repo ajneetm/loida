@@ -55,17 +55,17 @@ export default function CoachApplyPage() {
     }
   }
 
-  const inputCls = 'w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-[#0A1628] focus:outline-none focus:border-[#B8973A]/60 transition-colors placeholder:text-stone-300'
+  const inputCls = 'w-full border border-stone-200 rounded-none px-4 py-2.5 text-sm text-[#022269] focus:outline-none focus:border-[#c71430]/60 transition-colors placeholder:text-stone-300'
 
   const steps = ['About You', 'Domains & Skills', 'Finalise']
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       {/* Header */}
-      <div className="bg-[#0A1628] rounded-2xl p-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_50%,#1A2B4A,transparent)]" />
+      <div className="bg-[#022269] rounded-none p-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_50%,#011344,transparent)]" />
         <div className="relative z-10">
-          <p className="text-[#B8973A] text-xs tracking-[0.2em] uppercase mb-2">Become a Coach</p>
+          <p className="text-[#c71430] text-xs tracking-[0.2em] uppercase mb-2">Become a Coach</p>
           <h2 className="font-display text-3xl text-white font-light mb-2">
             Share Your Expertise
           </h2>
@@ -76,14 +76,14 @@ export default function CoachApplyPage() {
       </div>
 
       {/* Step indicator */}
-      <div className="flex items-center gap-0 bg-white border border-stone-100 rounded-2xl p-2">
+      <div className="flex items-center gap-0 bg-white border border-stone-100 rounded-none p-2">
         {steps.map((s, i) => {
           const n = (i + 1) as 1 | 2 | 3
           const active = step === n
           const done   = step > n
           return (
-            <div key={s} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium transition-all ${active ? 'bg-[#0A1628] text-white' : done ? 'text-[#B8973A]' : 'text-stone-400'}`}>
-              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] border ${active ? 'border-white/30 bg-white/10' : done ? 'border-[#B8973A]/30 bg-[#B8973A]/10' : 'border-stone-200'}`}>
+            <div key={s} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-none text-xs font-medium transition-all ${active ? 'bg-[#022269] text-white' : done ? 'text-[#c71430]' : 'text-stone-400'}`}>
+              <span className={`w-5 h-5 rounded-none flex items-center justify-center text-[10px] border ${active ? 'border-white/30 bg-white/10' : done ? 'border-[#c71430]/30 bg-[#c71430]/10' : 'border-stone-200'}`}>
                 {done ? '✓' : n}
               </span>
               <span className="hidden sm:inline">{s}</span>
@@ -93,9 +93,9 @@ export default function CoachApplyPage() {
       </div>
 
       {/* Form card */}
-      <div className="bg-white rounded-2xl border border-stone-100 p-8 space-y-6">
+      <div className="bg-white rounded-none border border-stone-100 p-8 space-y-6">
         {error && (
-          <div className="bg-red-50 border border-red-100 text-red-500 text-sm px-4 py-3 rounded-xl">{error}</div>
+          <div className="bg-red-50 border border-red-100 text-red-500 text-sm px-4 py-3 rounded-none">{error}</div>
         )}
 
         {/* ── Step 1: About ── */}
@@ -148,9 +148,9 @@ export default function CoachApplyPage() {
                   const color = getDomainColor(d)
                   return (
                     <button key={d} type="button" onClick={() => toggleArr('domains', d)}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-none border text-left transition-all"
                       style={sel ? { borderColor: color, background: `${color}08`, color } : { borderColor: '#e7e5e4', color: '#78716c' }}>
-                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: color }} />
+                      <div className="w-3 h-3 rounded-none flex-shrink-0" style={{ background: color }} />
                       <span className="text-sm font-medium">{getDomainLabel(d)}</span>
                       {sel && <span className="ml-auto text-xs">✓</span>}
                     </button>
@@ -166,7 +166,7 @@ export default function CoachApplyPage() {
                   const sel = form.specialties.includes(s)
                   return (
                     <button key={s} type="button" onClick={() => toggleArr('specialties', s)}
-                      className={`px-3 py-1.5 rounded-full text-xs border transition-all ${sel ? 'bg-[#0A1628] text-white border-[#0A1628]' : 'border-stone-200 text-stone-500 hover:border-stone-400'}`}>
+                      className={`px-3 py-1.5 rounded-none text-xs border transition-all ${sel ? 'bg-[#022269] text-white border-[#022269]' : 'border-stone-200 text-stone-500 hover:border-stone-400'}`}>
                       {s}
                     </button>
                   )
@@ -188,7 +188,7 @@ export default function CoachApplyPage() {
         {/* ── Step 3: Review ── */}
         {step === 3 && (
           <div className="space-y-5">
-            <h3 className="font-display text-xl text-[#0A1628]">Review your application</h3>
+            <h3 className="font-display text-xl text-[#022269]">Review your application</h3>
 
             {[
               { label: 'Bio',        value: form.bio || '—' },
@@ -200,11 +200,11 @@ export default function CoachApplyPage() {
             ].map(row => (
               <div key={row.label} className="flex flex-col gap-1 py-3 border-b border-stone-50">
                 <p className="text-stone-400 text-xs tracking-wide">{row.label}</p>
-                <p className="text-[#0A1628] text-sm leading-relaxed">{row.value}</p>
+                <p className="text-[#022269] text-sm leading-relaxed">{row.value}</p>
               </div>
             ))}
 
-            <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 text-sm text-amber-700">
+            <div className="bg-amber-50 border border-amber-100 rounded-none p-4 text-sm text-amber-700">
               <p className="font-medium mb-1">📋 What happens next?</p>
               <p className="text-amber-600 text-xs leading-relaxed">
                 Our team will review your application within 3–5 business days. If approved, you will receive an email with next steps including an onboarding call.
@@ -228,7 +228,7 @@ export default function CoachApplyPage() {
                 if (step === 2 && form.domains.length === 0) { setError('Select at least one domain.'); return }
                 setError(''); setStep(s => (s + 1) as any)
               }}
-              className="bg-[#0A1628] hover:bg-[#1A2B4A] text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-colors"
+              className="bg-[#022269] hover:bg-[#011344] text-white text-sm font-medium px-6 py-2.5 rounded-none transition-colors"
             >
               Continue →
             </button>
@@ -236,7 +236,7 @@ export default function CoachApplyPage() {
             <button
               onClick={handleSubmit}
               disabled={saving}
-              className="bg-[#B8973A] hover:bg-[#D4B05A] disabled:opacity-50 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-colors"
+              className="bg-[#c71430] hover:bg-[#e8203c] disabled:opacity-50 text-white text-sm font-medium px-6 py-2.5 rounded-none transition-colors"
             >
               {saving ? 'Submitting…' : 'Submit Application'}
             </button>

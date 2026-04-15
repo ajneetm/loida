@@ -27,19 +27,19 @@ export default async function AdminUsersPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl text-[#0A1628] font-light">Users</h1>
+        <h1 className="font-display text-3xl text-[#022269] font-light">Users</h1>
         <p className="text-stone-400 text-sm mt-1">{users.length} member{users.length !== 1 ? 's' : ''} on the platform</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl border border-stone-100 p-4 flex flex-wrap gap-6">
+      <div className="bg-white rounded-none border border-stone-100 p-4 flex flex-wrap gap-6">
         <div>
           <p className="text-stone-400 text-[10px] tracking-widest uppercase mb-2">Plan</p>
           <div className="flex gap-2">
-            <a href="/admin/users" className={`text-xs px-3 py-1.5 rounded-full border transition-all ${!plan ? 'bg-[#0A1628] text-white border-[#0A1628]' : 'border-stone-200 text-stone-500 hover:border-stone-400'}`}>All</a>
+            <a href="/admin/users" className={`text-xs px-3 py-1.5 rounded-none border transition-all ${!plan ? 'bg-[#022269] text-white border-[#022269]' : 'border-stone-200 text-stone-500 hover:border-stone-400'}`}>All</a>
             {plans.map(p => (
               <a key={p} href={`/admin/users?plan=${p}`}
-                className={`text-xs px-3 py-1.5 rounded-full border transition-all ${plan === p ? 'bg-[#0A1628] text-white border-[#0A1628]' : 'border-stone-200 text-stone-500 hover:border-stone-400'}`}>
+                className={`text-xs px-3 py-1.5 rounded-none border transition-all ${plan === p ? 'bg-[#022269] text-white border-[#022269]' : 'border-stone-200 text-stone-500 hover:border-stone-400'}`}>
                 {p}
               </a>
             ))}
@@ -50,7 +50,7 @@ export default async function AdminUsersPage({
           <div className="flex gap-2">
             {roles.map(r => (
               <a key={r} href={`/admin/users?role=${r}`}
-                className={`text-xs px-3 py-1.5 rounded-full border transition-all ${role === r ? 'bg-[#0A1628] text-white border-[#0A1628]' : 'border-stone-200 text-stone-500 hover:border-stone-400'}`}>
+                className={`text-xs px-3 py-1.5 rounded-none border transition-all ${role === r ? 'bg-[#022269] text-white border-[#022269]' : 'border-stone-200 text-stone-500 hover:border-stone-400'}`}>
                 {r}
               </a>
             ))}
@@ -59,7 +59,7 @@ export default async function AdminUsersPage({
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-stone-100 overflow-hidden">
+      <div className="bg-white rounded-none border border-stone-100 overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-stone-50">
@@ -76,26 +76,26 @@ export default async function AdminUsersPage({
               <tr key={user.id} className="hover:bg-stone-50/50 transition-colors">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#0A1628]/8 flex items-center justify-center text-[#0A1628] text-xs font-medium flex-shrink-0">
+                    <div className="w-8 h-8 rounded-none bg-[#022269]/8 flex items-center justify-center text-[#022269] text-xs font-medium flex-shrink-0">
                       {user.name?.charAt(0) ?? '?'}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[#0A1628] text-sm font-medium truncate">{user.name ?? 'Unknown'}</p>
+                      <p className="text-[#022269] text-sm font-medium truncate">{user.name ?? 'Unknown'}</p>
                       <p className="text-stone-400 text-xs truncate">{user.email}</p>
                     </div>
                   </div>
                 </td>
                 <td className="px-4 py-4 hidden md:table-cell">
-                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-none ${
                     user.role === 'ADMIN' ? 'bg-red-50 text-red-500' :
                     user.role === 'COACH' ? 'bg-blue-50 text-blue-500' :
                     'bg-stone-100 text-stone-500'
                   }`}>{user.role}</span>
                 </td>
                 <td className="px-4 py-4 hidden sm:table-cell">
-                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${
-                    user.membership?.plan === 'PROFESSIONAL' ? 'bg-[#B8973A]/10 text-[#B8973A] border-[#B8973A]/20' :
-                    user.membership?.plan === 'PERSONAL'     ? 'bg-[#0A1628]/8 text-[#0A1628] border-[#0A1628]/15' :
+                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-none border ${
+                    user.membership?.plan === 'PROFESSIONAL' ? 'bg-[#c71430]/10 text-[#c71430] border-[#c71430]/20' :
+                    user.membership?.plan === 'PERSONAL'     ? 'bg-[#022269]/8 text-[#022269] border-[#022269]/15' :
                     'bg-stone-50 text-stone-400 border-stone-200'
                   }`}>{user.membership?.plan ?? 'FREE'}</span>
                 </td>

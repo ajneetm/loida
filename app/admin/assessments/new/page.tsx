@@ -96,27 +96,27 @@ export default function NewAssessmentPage() {
   }
 
   const color = getDomainColor(form.domain)
-  const inputCls = 'w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-[#0A1628] focus:outline-none focus:border-[#B8973A]/50 transition-colors placeholder:text-stone-300'
+  const inputCls = 'w-full border border-stone-200 rounded-none px-4 py-2.5 text-sm text-[#022269] focus:outline-none focus:border-[#c71430]/50 transition-colors placeholder:text-stone-300'
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl text-[#0A1628] font-light">New Assessment</h1>
+        <h1 className="font-display text-3xl text-[#022269] font-light">New Assessment</h1>
         <button onClick={() => router.back()} className="text-stone-400 hover:text-stone-600 text-sm transition-colors">← Back</button>
       </div>
 
       {/* Basic info */}
-      <div className="bg-white rounded-2xl border border-stone-100 p-6 space-y-4">
-        <h2 className="font-display text-lg text-[#0A1628]">Basic Info</h2>
+      <div className="bg-white rounded-none border border-stone-100 p-6 space-y-4">
+        <h2 className="font-display text-lg text-[#022269]">Basic Info</h2>
 
-        {error && <div className="bg-red-50 border border-red-100 text-red-500 text-sm px-4 py-3 rounded-xl">{error}</div>}
+        {error && <div className="bg-red-50 border border-red-100 text-red-500 text-sm px-4 py-3 rounded-none">{error}</div>}
 
         <div>
           <label className="block text-stone-400 text-xs tracking-wide mb-1.5">Domain *</label>
           <div className="flex gap-2">
             {domains.map(d => (
               <button key={d} type="button" onClick={() => setForm(p => ({ ...p, domain: d }))}
-                className="flex-1 py-2.5 rounded-xl text-xs font-medium border transition-all"
+                className="flex-1 py-2.5 rounded-none text-xs font-medium border transition-all"
                 style={form.domain === d
                   ? { background: getDomainColor(d), color: '#fff', borderColor: getDomainColor(d) }
                   : { borderColor: '#e7e5e4', color: '#78716c' }}>
@@ -147,10 +147,10 @@ export default function NewAssessmentPage() {
       {/* Questions */}
       <div className="space-y-4">
         {questions.map((q, qi) => (
-          <div key={q.id} className="bg-white rounded-2xl border border-stone-100 p-6 space-y-4">
+          <div key={q.id} className="bg-white rounded-none border border-stone-100 p-6 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
+                <span className="w-6 h-6 rounded-none flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
                   style={{ background: color }}>
                   {qi + 1}
                 </span>
@@ -175,7 +175,7 @@ export default function NewAssessmentPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {qTypes.map(t => (
                 <button key={t.value} type="button" onClick={() => updateQ(qi, { type: t.value })}
-                  className={`p-2.5 rounded-xl border text-left transition-all ${q.type === t.value ? 'border-2' : 'border-stone-200 hover:border-stone-300'}`}
+                  className={`p-2.5 rounded-none border text-left transition-all ${q.type === t.value ? 'border-2' : 'border-stone-200 hover:border-stone-300'}`}
                   style={q.type === t.value ? { borderColor: color, background: `${color}06` } : {}}>
                   <p className="text-xs font-medium" style={q.type === t.value ? { color } : { color: '#44403c' }}>{t.label}</p>
                   <p className="text-[10px] text-stone-400">{t.desc}</p>
@@ -192,27 +192,27 @@ export default function NewAssessmentPage() {
                     <input type="text" value={opt.label}
                       onChange={e => updateOption(qi, oi, e.target.value)}
                       placeholder={`Option ${oi + 1}`}
-                      className="flex-1 border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#B8973A]/50 placeholder:text-stone-300" />
+                      className="flex-1 border border-stone-200 rounded-none px-3 py-2 text-sm focus:outline-none focus:border-[#c71430]/50 placeholder:text-stone-300" />
                     <button onClick={() => removeOption(qi, oi)} disabled={q.options.length <= 2}
                       className="text-red-300 hover:text-red-400 disabled:opacity-30 text-xs w-5 flex-shrink-0">✕</button>
                   </div>
                 ))}
                 <button onClick={() => addOption(qi)}
-                  className="text-xs text-[#B8973A] hover:underline mt-1">+ Add option</button>
+                  className="text-xs text-[#c71430] hover:underline mt-1">+ Add option</button>
               </div>
             )}
 
             {q.type === 'SCALE' && (
-              <div className="flex items-center gap-3 text-xs text-stone-400 bg-stone-50 rounded-xl px-4 py-3">
-                <span className="w-6 h-6 bg-white border border-stone-200 rounded-lg flex items-center justify-center text-[#0A1628] font-medium">1</span>
-                <div className="flex-1 h-1 bg-stone-200 rounded-full" />
-                <span className="w-6 h-6 bg-white border border-stone-200 rounded-lg flex items-center justify-center text-[#0A1628] font-medium">5</span>
+              <div className="flex items-center gap-3 text-xs text-stone-400 bg-stone-50 rounded-none px-4 py-3">
+                <span className="w-6 h-6 bg-white border border-stone-200 rounded-none flex items-center justify-center text-[#022269] font-medium">1</span>
+                <div className="flex-1 h-1 bg-stone-200 rounded-none" />
+                <span className="w-6 h-6 bg-white border border-stone-200 rounded-none flex items-center justify-center text-[#022269] font-medium">5</span>
                 <span className="text-stone-300 ml-2 text-[10px]">Scale preview</span>
               </div>
             )}
 
             {q.type === 'TEXT' && (
-              <div className="bg-stone-50 rounded-xl px-4 py-3 text-xs text-stone-400">
+              <div className="bg-stone-50 rounded-none px-4 py-3 text-xs text-stone-400">
                 Free-text input — no options needed
               </div>
             )}
@@ -220,8 +220,8 @@ export default function NewAssessmentPage() {
             {/* Required toggle */}
             <div className="flex items-center gap-2">
               <button type="button" onClick={() => updateQ(qi, { required: !q.required })}
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${q.required ? 'bg-[#B8973A]' : 'bg-stone-200'}`}>
-                <span className="inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform"
+                className={`relative inline-flex h-5 w-9 items-center rounded-none transition-colors ${q.required ? 'bg-[#c71430]' : 'bg-stone-200'}`}>
+                <span className="inline-block h-3.5 w-3.5 rounded-none bg-white shadow transition-transform"
                   style={{ transform: q.required ? 'translateX(18px)' : 'translateX(2px)' }} />
               </button>
               <span className="text-xs text-stone-400">Required</span>
@@ -231,7 +231,7 @@ export default function NewAssessmentPage() {
 
         {/* Add question */}
         <button onClick={() => setQuestions(qs => [...qs, blankQuestion()])}
-          className="w-full border-2 border-dashed border-stone-200 hover:border-[#B8973A]/40 text-stone-400 hover:text-[#B8973A] rounded-2xl py-4 text-sm font-medium transition-all">
+          className="w-full border-2 border-dashed border-stone-200 hover:border-[#c71430]/40 text-stone-400 hover:text-[#c71430] rounded-none py-4 text-sm font-medium transition-all">
           + Add Question
         </button>
       </div>
@@ -240,7 +240,7 @@ export default function NewAssessmentPage() {
       <div className="flex items-center justify-between py-4">
         <p className="text-stone-400 text-sm">{questions.length} question{questions.length !== 1 ? 's' : ''}</p>
         <button onClick={handleSave} disabled={saving}
-          className="bg-[#B8973A] hover:bg-[#D4B05A] disabled:opacity-50 text-white text-sm font-medium px-8 py-3 rounded-xl transition-colors">
+          className="bg-[#c71430] hover:bg-[#e8203c] disabled:opacity-50 text-white text-sm font-medium px-8 py-3 rounded-none transition-colors">
           {saving ? 'Saving…' : 'Publish Assessment'}
         </button>
       </div>

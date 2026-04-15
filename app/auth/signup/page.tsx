@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 
 const domains = [
   { id: 'HARMONY', label: 'Harmony', desc: 'Self-awareness & personal growth', color: '#6B8F9E' },
-  { id: 'CAREER',  label: 'Career',  desc: 'Career path & professional dev', color: '#B8973A' },
+  { id: 'CAREER',  label: 'Career',  desc: 'Career path & professional dev', color: '#c71430' },
   { id: 'BUSINESS',label: 'Business',desc: 'Entrepreneurship & strategy',      color: '#2C4A3E' },
 ]
 
@@ -52,12 +52,12 @@ export default function SignupPage() {
       <div className="flex items-center gap-2 mb-8">
         {[1, 2].map(s => (
           <div key={s} className="flex items-center gap-2">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
-              s === step ? 'bg-[#B8973A] text-white' : s < step ? 'bg-[#B8973A]/30 text-[#B8973A]' : 'bg-white/8 text-white/30'
+            <div className={`w-6 h-6 rounded-none flex items-center justify-center text-xs font-medium transition-colors ${
+              s === step ? 'bg-[#c71430] text-white' : s < step ? 'bg-[#c71430]/30 text-[#c71430]' : 'bg-white/8 text-white/30'
             }`}>
               {s}
             </div>
-            {s < 2 && <div className={`w-12 h-px ${step > 1 ? 'bg-[#B8973A]/50' : 'bg-white/10'}`} />}
+            {s < 2 && <div className={`w-12 h-px ${step > 1 ? 'bg-[#c71430]/50' : 'bg-white/10'}`} />}
           </div>
         ))}
         <span className="text-white/30 text-xs ml-2">{step === 1 ? 'Your interests' : 'Account details'}</span>
@@ -71,26 +71,26 @@ export default function SignupPage() {
               <button
                 key={d.id}
                 onClick={() => toggleDomain(d.id)}
-                className={`w-full flex items-center gap-4 p-4 rounded-xl border text-left transition-all ${
+                className={`w-full flex items-center gap-4 p-4 rounded-none border text-left transition-all ${
                   selected.includes(d.id)
-                    ? 'border-[#B8973A]/60 bg-[#B8973A]/8'
+                    ? 'border-[#c71430]/60 bg-[#c71430]/8'
                     : 'border-white/8 bg-white/3 hover:border-white/20'
                 }`}
               >
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: d.color }} />
+                <div className="w-3 h-3 rounded-none flex-shrink-0" style={{ background: d.color }} />
                 <div>
                   <p className="text-white text-sm font-medium">{d.label}</p>
                   <p className="text-white/40 text-xs">{d.desc}</p>
                 </div>
                 {selected.includes(d.id) && (
-                  <span className="ml-auto text-[#B8973A] text-xs">✓</span>
+                  <span className="ml-auto text-[#c71430] text-xs">✓</span>
                 )}
               </button>
             ))}
           </div>
           <button
             onClick={() => setStep(2)}
-            className="w-full bg-[#B8973A] hover:bg-[#D4B05A] text-white py-3 rounded-xl text-sm font-medium tracking-wide transition-colors"
+            className="w-full bg-[#c71430] hover:bg-[#e8203c] text-white py-3 rounded-none text-sm font-medium tracking-wide transition-colors"
           >
             Continue →
           </button>
@@ -98,7 +98,7 @@ export default function SignupPage() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm">
+            <div className="bg-red-500/10 border border-red-500/20 rounded-none px-4 py-3 text-red-400 text-sm">
               {error}
             </div>
           )}
@@ -110,7 +110,7 @@ export default function SignupPage() {
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
               placeholder="Your full name"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#B8973A]/50 transition-colors"
+              className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#c71430]/50 transition-colors"
             />
           </div>
           <div>
@@ -121,7 +121,7 @@ export default function SignupPage() {
               value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
               placeholder="you@example.com"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#B8973A]/50 transition-colors"
+              className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#c71430]/50 transition-colors"
             />
           </div>
           <div>
@@ -133,7 +133,7 @@ export default function SignupPage() {
               value={form.password}
               onChange={e => setForm({ ...form, password: e.target.value })}
               placeholder="Min 8 characters"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#B8973A]/50 transition-colors"
+              className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#c71430]/50 transition-colors"
             />
           </div>
 
@@ -147,14 +147,14 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="flex-1 border border-white/10 text-white/50 hover:text-white py-3 rounded-xl text-sm transition-colors"
+              className="flex-1 border border-white/10 text-white/50 hover:text-white py-3 rounded-none text-sm transition-colors"
             >
               ← Back
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-[#B8973A] hover:bg-[#D4B05A] disabled:opacity-50 text-white py-3 rounded-xl text-sm font-medium transition-colors"
+              className="flex-1 bg-[#c71430] hover:bg-[#e8203c] disabled:opacity-50 text-white py-3 rounded-none text-sm font-medium transition-colors"
             >
               {loading ? 'Creating account…' : 'Create Account'}
             </button>
@@ -164,7 +164,7 @@ export default function SignupPage() {
 
       <p className="text-center text-white/30 text-sm mt-6">
         Already have an account?{' '}
-        <Link href="/auth/login" className="text-[#B8973A] hover:text-[#D4B05A] transition-colors">Sign in</Link>
+        <Link href="/auth/login" className="text-[#c71430] hover:text-[#e8203c] transition-colors">Sign in</Link>
       </p>
     </div>
   )

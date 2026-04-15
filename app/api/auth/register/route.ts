@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         role: 'USER',
         profile: {
           create: {
-            interests: interests ?? [],
+            interests: JSON.stringify(interests ?? []),
             language: 'en',
             timezone: 'Europe/London',
           },

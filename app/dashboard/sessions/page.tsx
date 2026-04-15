@@ -27,14 +27,14 @@ export default async function SessionsPage() {
     <div className="max-w-4xl mx-auto space-y-8">
 
       {/* Book new session CTA */}
-      <div className="bg-[#0A1628] rounded-2xl p-6 flex items-center justify-between gap-4 flex-wrap">
+      <div className="bg-[#022269] rounded-none p-6 flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h2 className="font-display text-xl text-white font-light">Ready for your next session?</h2>
           <p className="text-white/40 text-sm mt-1">Browse certified coaches and book at your convenience.</p>
         </div>
         <Link
           href="/dashboard/coaches"
-          className="bg-[#B8973A] hover:bg-[#D4B05A] text-white text-sm font-medium px-5 py-2.5 rounded-full transition-colors flex-shrink-0"
+          className="bg-[#c71430] hover:bg-[#e8203c] text-white text-sm font-medium px-5 py-2.5 rounded-none transition-colors flex-shrink-0"
         >
           Find a Coach →
         </Link>
@@ -42,12 +42,12 @@ export default async function SessionsPage() {
 
       {/* Upcoming */}
       <div>
-        <h2 className="font-display text-2xl text-[#0A1628] mb-5">
+        <h2 className="font-display text-2xl text-[#022269] mb-5">
           Upcoming <span className="text-stone-300 text-xl">({upcoming.length})</span>
         </h2>
 
         {upcoming.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-stone-100 p-12 text-center">
+          <div className="bg-white rounded-none border border-stone-100 p-12 text-center">
             <p className="text-stone-400 text-sm">No upcoming sessions. Book one with a coach!</p>
           </div>
         ) : (
@@ -62,7 +62,7 @@ export default async function SessionsPage() {
       {/* Past */}
       {past.length > 0 && (
         <div>
-          <h2 className="font-display text-2xl text-[#0A1628] mb-5">
+          <h2 className="font-display text-2xl text-[#022269] mb-5">
             Past Sessions <span className="text-stone-300 text-xl">({past.length})</span>
           </h2>
           <div className="space-y-3">
@@ -79,17 +79,17 @@ export default async function SessionsPage() {
 function BookingCard({ booking, past = false }: { booking: any; past?: boolean }) {
   const coach = booking.coach
   return (
-    <div className={`bg-white rounded-2xl border p-6 flex items-center gap-5 transition-all ${past ? 'border-stone-100 opacity-70' : 'border-stone-100 hover:border-stone-200 hover:shadow-sm'}`}>
+    <div className={`bg-white rounded-none border p-6 flex items-center gap-5 transition-all ${past ? 'border-stone-100 opacity-70' : 'border-stone-100 hover:border-stone-200 hover:shadow-sm'}`}>
       {/* Coach avatar */}
-      <div className="w-12 h-12 rounded-xl bg-[#0A1628]/8 flex items-center justify-center text-[#0A1628] font-display text-lg flex-shrink-0">
+      <div className="w-12 h-12 rounded-none bg-[#022269]/8 flex items-center justify-center text-[#022269] font-display text-lg flex-shrink-0">
         {coach.user.name?.charAt(0) ?? 'C'}
       </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-[#0A1628] font-medium text-sm">{coach.user.name}</p>
+          <p className="text-[#022269] font-medium text-sm">{coach.user.name}</p>
           {coach.domains?.map((d: string) => (
-            <span key={d} className="text-[10px] px-2 py-0.5 rounded-full"
+            <span key={d} className="text-[10px] px-2 py-0.5 rounded-none"
               style={{ background: `${getDomainColor(d)}15`, color: getDomainColor(d) }}>
               {d}
             </span>
@@ -104,7 +104,7 @@ function BookingCard({ booking, past = false }: { booking: any; past?: boolean }
       </div>
 
       <div className="flex items-center gap-3 flex-shrink-0">
-        <span className={`text-[10px] font-medium px-2.5 py-1 rounded-full border ${statusStyles[booking.status]}`}>
+        <span className={`text-[10px] font-medium px-2.5 py-1 rounded-none border ${statusStyles[booking.status]}`}>
           {booking.status}
         </span>
         {booking.meetingUrl && booking.status === 'CONFIRMED' && (
@@ -112,7 +112,7 @@ function BookingCard({ booking, past = false }: { booking: any; past?: boolean }
             href={booking.meetingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs bg-[#0A1628] text-white px-3 py-1.5 rounded-full hover:bg-[#1A2B4A] transition-colors"
+            className="text-xs bg-[#022269] text-white px-3 py-1.5 rounded-none hover:bg-[#011344] transition-colors"
           >
             Join →
           </a>
