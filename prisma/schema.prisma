@@ -390,8 +390,10 @@ model ContactMessage {
   phone      String?
   programme  String?
   message    String
-  status     String   @default("UNREAD") // UNREAD | READ
+  notes      String?  // staff follow-up notes
+  status     String   @default("UNREAD") // UNREAD | READ | IN_PROGRESS | REPLIED | CLOSED
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 // ─── Trainee System ───────────────────────────────────────────────────

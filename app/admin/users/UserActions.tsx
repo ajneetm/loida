@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, Trash2, X } from 'lucide-react'
 
-const ROLES = ['USER', 'ADMIN', 'COACH', 'TRAINER', 'INSTITUTION']
+const ROLES = ['USER', 'ADMIN', 'STAFF', 'COACH', 'TRAINER', 'INSTITUTION']
 
 export function AddUserButton() {
   const router = useRouter()

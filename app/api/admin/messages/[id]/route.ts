@@ -7,18 +7,28 @@ export async function PATCH(
   { params }: { params: { id: string } },
 ) {
   const session = await auth()
-  if ((session?.user as any)?.role !== 'ADMIN') {
+  const role    = (session?.user as any)?.role
+  if (!session || !['ADMIN', 'STAFF'].includes(role)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { status } = await req.json()
-  if (!['UNREAD', 'READ'].includes(status)) {
-    return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
+  const body = await req.json()
+  const update: any = {}
+
+  if (body.status !== undefined) {
+    if (!['UNREAD', 'READ', 'IN_PROGRESS', 'REPLIED', 'CLOSED'].includes(body.status)) {
+      return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
+    }
+    update.status = body.status
+  }
+
+  if (body.notes !== undefined) {
+    update.notes = body.notes
   }
 
   const msg = await prisma.contactMessage.update({
     where: { id: params.id },
-    data:  { status },
+    data:  update,
   })
 
   return NextResponse.json(msg)
@@ -29,7 +39,8 @@ export async function DELETE(
   { params }: { params: { id: string } },
 ) {
   const session = await auth()
-  if ((session?.user as any)?.role !== 'ADMIN') {
+  const role    = (session?.user as any)?.role
+  if (!session || !['ADMIN', 'STAFF'].includes(role)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 

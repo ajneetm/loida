@@ -20,11 +20,15 @@ export async function sendContactNotification(msg: {
   message:    string
 }) {
   const adminEmail = process.env.ADMIN_EMAIL
-  if (!adminEmail || !process.env.SMTP_HOST || !process.env.SMTP_USER) return
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER) return
+
+  // Send to both staff and admin (deduplicated)
+  const staffEmail = process.env.STAFF_EMAIL ?? 'm.alamri@ajnee.com'
+  const recipients = [...new Set([staffEmail, adminEmail].filter(Boolean))].join(', ')
 
   await getTransporter().sendMail({
     from:    `"Loida British" <${process.env.SMTP_FROM ?? process.env.SMTP_USER}>`,
-    to:      adminEmail,
+    to:      recipients,
     subject: `New Message from ${msg.name} — Loida British`,
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;border:1px solid #e8e4dc">

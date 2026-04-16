@@ -10,6 +10,7 @@ export default async function DashboardPage() {
   const session = await auth()
   const role    = (session?.user as any)?.role
   if (role === 'ADMIN')       redirect('/admin')
+  if (role === 'STAFF')       redirect('/staff')
   if (role === 'AGENT')       redirect('/institution')
   if (role === 'INSTITUTION') redirect('/institution')
   if (role === 'TRAINER')     redirect('/trainer')
