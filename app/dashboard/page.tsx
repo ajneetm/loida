@@ -1,4 +1,5 @@
 import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getDomainColor, getDomainLabel, formatDate } from '@/lib/utils'
 import Link from 'next/link'
@@ -7,6 +8,11 @@ import RecommendationsWidget from '@/components/dashboard/RecommendationsWidget'
 
 export default async function DashboardPage() {
   const session = await auth()
+  const role    = (session?.user as any)?.role
+  if (role === 'ADMIN')   redirect('/admin')
+  if (role === 'AGENT')   redirect('/agent')
+  if (role === 'TRAINER') redirect('/trainer')
+
   const userId = session!.user!.id as string
 
   // Fetch user data in parallel
