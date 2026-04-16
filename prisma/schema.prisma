@@ -29,6 +29,7 @@ model User {
   sessions       Session[]
   agentProfile   Agent?
   trainerProfile Trainer?
+  traineeProfile TraineeProfile?
 }
 
 model Account {
@@ -252,12 +253,13 @@ model Curriculum {
   name        String
   domain      String   // HARMONY | CAREER | BUSINESS
   siteUrl     String
-  apiSecret   String   // shared secret for future SSO
+  apiSecret   String   // shared secret for external API auth
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
 
   accreditations TrainerAccreditation[]
   workshops      Workshop[]
+  trainees       TraineeProfile[]
 }
 
 model Agent {
@@ -326,12 +328,15 @@ model Workshop {
 model WorkshopRegistration {
   id           String   @id @default(cuid())
   workshopId   String
+  traineeId    String?  // set if trainee has a Loida account
   name         String
   email        String
   phone        String?
+  source       String   @default("LINK") // LINK | WEBSITE
   registeredAt DateTime @default(now())
 
-  workshop Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  workshop Workshop        @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  trainee  TraineeProfile? @relation(fields: [traineeId], references: [id])
 }
 
 model WorkshopMaterial {
@@ -361,4 +366,24 @@ model CertificateRequest {
   updatedAt    DateTime @updatedAt
 
   trainer Trainer @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+}
+
+// ─── Trainee System ───────────────────────────────────────────────────
+
+model TraineeProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  curriculumId String
+  username     String
+  firstName    String
+  lastName     String
+  phone        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  curriculum    Curriculum             @relation(fields: [curriculumId], references: [id])
+  registrations WorkshopRegistration[]
+
+  @@unique([username, curriculumId])
 }
