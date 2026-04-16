@@ -10,7 +10,7 @@ interface Curriculum {
   domain: string
 }
 
-export default function AddTrainerModal({ curricula }: { curricula: Curriculum[] }) {
+export default function AddTrainerModal({ curricula, large }: { curricula: Curriculum[]; large?: boolean }) {
   const router = useRouter()
   const [open, setOpen]         = useState(false)
   const [form, setForm]         = useState({ name: '', email: '', phone: '' })
@@ -66,9 +66,13 @@ export default function AddTrainerModal({ curricula }: { curricula: Curriculum[]
       {/* Trigger */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 bg-[#1C2B39] text-white px-4 py-2 text-sm hover:bg-[#2a3f52] transition-colors"
+        className={`flex items-center gap-2 bg-[#1C2B39] text-white hover:bg-[#2a3f52] transition-colors font-medium ${
+          large
+            ? 'px-6 py-3 text-base gap-3'
+            : 'px-4 py-2 text-sm'
+        }`}
       >
-        <Plus className="w-4 h-4" />
+        <Plus className={large ? 'w-5 h-5' : 'w-4 h-4'} />
         Add Trainer
       </button>
 

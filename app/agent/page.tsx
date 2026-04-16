@@ -40,14 +40,11 @@ export default async function AgentDashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-[#1C2B39]">Agent Dashboard</h1>
-          <p className="text-sm text-[#6B8F9E] mt-1">
-            {agent.companyName || session.user.name} — {agent.country}
-          </p>
-        </div>
-        <AddTrainerModal curricula={curricula} />
+      <div>
+        <h1 className="text-2xl font-semibold text-[#1C2B39]">Agent Dashboard</h1>
+        <p className="text-sm text-[#6B8F9E] mt-1">
+          {agent.companyName || session.user.name} — {agent.country}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -56,16 +53,20 @@ export default async function AgentDashboard() {
         <StatCard icon={<BookOpen className="w-5 h-5" />} label="Accreditations"   value={totalAccreditations} />
       </div>
 
-      <div className="bg-white rounded-xl border border-[#E8E4DC] overflow-hidden">
-        <div className="px-6 py-4 border-b border-[#E8E4DC]">
+      <div className="bg-white border border-[#E8E4DC] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[#E8E4DC] flex items-center justify-between">
           <h2 className="font-medium text-[#1C2B39]">Trainers</h2>
+          <AddTrainerModal curricula={curricula} />
         </div>
 
         {agent.trainers.length === 0 ? (
-          <div className="p-12 text-center text-[#6B8F9E]">
-            <Users className="w-10 h-10 mx-auto mb-3 opacity-40" />
-            <p>No trainers yet</p>
-            <AddTrainerModal curricula={curricula} />
+          <div className="p-16 text-center space-y-4">
+            <Users className="w-12 h-12 mx-auto text-[#6B8F9E] opacity-30" />
+            <div>
+              <p className="text-[#1C2B39] font-medium">No trainers yet</p>
+              <p className="text-sm text-[#6B8F9E] mt-1">Add your first trainer to get started</p>
+            </div>
+            <AddTrainerModal curricula={curricula} large />
           </div>
         ) : (
           <div className="overflow-x-auto">
