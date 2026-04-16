@@ -14,6 +14,7 @@ const traineeSchema = z.object({
 const createSchema = z.object({
   curriculumId: z.string(),
   workshopDate: z.string(),
+  workshopId:   z.string().optional(),
   notes:        z.string().optional(),
   trainees:     z.array(traineeSchema).min(1),
 })
@@ -71,10 +72,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Not accredited for this curriculum' }, { status: 403 })
   }
 
+  // Skip duplicates if workshopId provided
+  let trainees = parsed.data.trainees
+  if (parsed.data.workshopId) {
+    const existing = await prisma.certificateRequest.findMany({
+      where: { workshopId: parsed.data.workshopId, trainerId: trainer.id },
+      select: { traineeEmail: true },
+    })
+    const existingEmails = new Set(existing.map(e => e.traineeEmail))
+    trainees = trainees.filter(t => !existingEmails.has(t.traineeEmail))
+  }
+
+  if (trainees.length === 0) {
+    return NextResponse.json({ count: 0, message: 'All already submitted' }, { status: 200 })
+  }
+
   const requests = await prisma.certificateRequest.createMany({
-    data: parsed.data.trainees.map(t => ({
+    data: trainees.map(t => ({
       trainerId:    trainer.id,
       curriculumId: parsed.data.curriculumId,
+      workshopId:   parsed.data.workshopId,
       workshopDate: new Date(parsed.data.workshopDate),
       notes:        parsed.data.notes,
       traineeName:  t.traineeName,

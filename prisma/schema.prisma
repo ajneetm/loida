@@ -351,6 +351,7 @@ model CertificateRequest {
   id           String   @id @default(cuid())
   trainerId    String
   curriculumId String
+  workshopId   String?
   traineeName  String
   traineeEmail String
   workshopDate DateTime

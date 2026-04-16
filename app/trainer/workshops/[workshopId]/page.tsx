@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { CalendarDays, MapPin, ChevronLeft, Users, Image, Video, Link2, Code2, MonitorPlay } from 'lucide-react'
 import CopyLinkButton from './CopyLinkButton'
+import RegistrationsWithCerts from './RegistrationsWithCerts'
 
 const TYPE_ICONS: Record<string, any> = {
   IMAGE: Image, VIDEO: Video, LINK: Link2, EMBED: MonitorPlay, CODE: Code2,
@@ -31,6 +32,13 @@ export default async function TrainerWorkshopDetailPage({ params }: { params: { 
     where: { trainerId_curriculumId: { trainerId: trainer.id, curriculumId: workshop.curriculumId } },
   })
   if (!acc || acc.status !== 'ACTIVE') redirect('/trainer/workshops')
+
+  // Get already-requested emails for this workshop
+  const existingCerts = await prisma.certificateRequest.findMany({
+    where:  { workshopId: workshop.id, trainerId: trainer.id },
+    select: { traineeEmail: true },
+  })
+  const existingCertEmails = existingCerts.map(c => c.traineeEmail)
 
   return (
     <div className="space-y-6">
@@ -103,33 +111,14 @@ export default async function TrainerWorkshopDetailPage({ params }: { params: { 
         </div>
       )}
 
-      {/* Registrations */}
-      <div className="bg-white border border-[#E8E4DC]">
-        <div className="px-5 py-4 border-b border-[#E8E4DC] flex items-center justify-between">
-          <h2 className="font-medium text-[#1C2B39]">Registrations</h2>
-          <span className="text-xs text-[#6B8F9E]">{workshop.registrations.length} registered</span>
-        </div>
-        {workshop.registrations.length === 0 ? (
-          <div className="p-10 text-center text-sm text-[#6B8F9E]">
-            <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
-            No registrations yet
-          </div>
-        ) : (
-          <div className="divide-y divide-[#E8E4DC]">
-            {workshop.registrations.map(r => (
-              <div key={r.id} className="flex items-center justify-between px-5 py-3 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-[#1C2B39]">{r.name}</p>
-                  <p className="text-xs text-[#6B8F9E]">{r.email}{r.phone ? ` · ${r.phone}` : ''}</p>
-                </div>
-                <p className="text-xs text-[#6B8F9E] flex-shrink-0">
-                  {new Date(r.registeredAt).toLocaleDateString()}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Registrations with certificate selection */}
+      <RegistrationsWithCerts
+        registrations={workshop.registrations}
+        workshopId={workshop.id}
+        curriculumId={workshop.curriculumId}
+        workshopDate={workshop.date.toISOString()}
+        existingEmails={existingCertEmails}
+      />
     </div>
   )
 }
