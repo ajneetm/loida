@@ -1,5 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import { formatDate } from '@/lib/utils'
+import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import { AddUserButton, DeleteUserButton } from './UserActions'
 
 export default async function AdminUsersPage({
   searchParams,
@@ -8,6 +11,9 @@ export default async function AdminUsersPage({
 }) {
   const plan = searchParams.plan?.toUpperCase()
   const role = searchParams.role?.toUpperCase()
+
+  const session = await auth()
+  if ((session?.user as any)?.role !== 'ADMIN') redirect('/dashboard')
 
   const users = await prisma.user.findMany({
     where: {
@@ -26,9 +32,12 @@ export default async function AdminUsersPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-3xl text-[#022269] font-light">Users</h1>
-        <p className="text-stone-400 text-sm mt-1">{users.length} member{users.length !== 1 ? 's' : ''} on the platform</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-[#1C2B39]">Users</h1>
+          <p className="text-[#6B8F9E] text-sm mt-1">{users.length} user{users.length !== 1 ? 's' : ''}</p>
+        </div>
+        <AddUserButton />
       </div>
 
       {/* Filters */}
@@ -69,6 +78,7 @@ export default async function AdminUsersPage({
               <th className="text-left text-[10px] text-stone-400 tracking-widest uppercase px-4 py-4 font-medium hidden lg:table-cell">Programs</th>
               <th className="text-left text-[10px] text-stone-400 tracking-widest uppercase px-4 py-4 font-medium hidden lg:table-cell">Assessments</th>
               <th className="text-left text-[10px] text-stone-400 tracking-widest uppercase px-4 py-4 font-medium hidden xl:table-cell">Joined</th>
+              <th className="px-4 py-4"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-50">
@@ -102,6 +112,9 @@ export default async function AdminUsersPage({
                 <td className="px-4 py-4 text-stone-500 text-sm hidden lg:table-cell">{user._count.enrollments}</td>
                 <td className="px-4 py-4 text-stone-500 text-sm hidden lg:table-cell">{user._count.assessmentResults}</td>
                 <td className="px-4 py-4 text-stone-400 text-xs hidden xl:table-cell">{formatDate(user.createdAt)}</td>
+                <td className="px-4 py-4">
+                  <DeleteUserButton userId={user.id} />
+                </td>
               </tr>
             ))}
           </tbody>
