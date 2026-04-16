@@ -113,7 +113,7 @@ export default async function AdminUsersPage({
                 <td className="px-4 py-4 text-stone-500 text-sm hidden lg:table-cell">{user._count.assessmentResults}</td>
                 <td className="px-4 py-4 text-stone-400 text-xs hidden xl:table-cell">{formatDate(user.createdAt)}</td>
                 <td className="px-4 py-4">
-                  <DeleteUserButton userId={user.id} />
+                  <DeleteUserButton userId={user.id} userName={user.name ?? undefined} />
                 </td>
               </tr>
             ))}

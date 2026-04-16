@@ -82,23 +82,64 @@ export function AddUserButton() {
   )
 }
 
-export function DeleteUserButton({ userId }: { userId: string }) {
+export function DeleteUserButton({ userId, userName }: { userId: string; userName?: string }) {
   const router = useRouter()
+  const [open, setOpen]       = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError]     = useState('')
 
   async function handleDelete() {
-    if (!confirm('Delete this user? This cannot be undone.')) return
     setLoading(true)
-    await fetch(`/api/users/${userId}`, { method: 'DELETE' })
+    setError('')
+    const res = await fetch(`/api/users/${userId}`, { method: 'DELETE' })
     setLoading(false)
-    router.refresh()
+    if (res.ok) {
+      setOpen(false)
+      router.refresh()
+    } else {
+      const data = await res.json()
+      setError(data.error || 'Something went wrong.')
+    }
   }
 
   return (
-    <button onClick={handleDelete} disabled={loading}
-      className="p-1.5 text-[#6B8F9E] hover:text-red-500 transition-colors disabled:opacity-40">
-      <Trash2 className="w-4 h-4" />
-    </button>
+    <>
+      <button onClick={() => setOpen(true)}
+        className="p-1.5 text-[#6B8F9E] hover:text-red-500 transition-colors">
+        <Trash2 className="w-4 h-4" />
+      </button>
+
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+          <div className="bg-white w-full max-w-sm shadow-xl border border-[#E8E4DC]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E4DC]">
+              <h2 className="font-semibold text-[#1C2B39]">Delete User</h2>
+              <button onClick={() => setOpen(false)} className="text-[#6B8F9E] hover:text-[#1C2B39]">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="px-6 py-5 space-y-4">
+              {error && <div className="bg-red-50 text-red-600 text-sm p-3">{error}</div>}
+              <p className="text-sm text-[#1C2B39]">
+                Are you sure you want to delete{' '}
+                <span className="font-semibold">{userName ?? 'this user'}</span>?
+                This action cannot be undone.
+              </p>
+              <div className="flex gap-3 pt-1">
+                <button onClick={() => setOpen(false)}
+                  className="flex-1 border border-[#E8E4DC] text-[#1C2B39] py-2.5 text-sm hover:bg-[#F8F7F4] transition-colors">
+                  Cancel
+                </button>
+                <button onClick={handleDelete} disabled={loading}
+                  className="flex-1 bg-red-500 text-white py-2.5 text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50">
+                  {loading ? 'Deleting…' : 'Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
