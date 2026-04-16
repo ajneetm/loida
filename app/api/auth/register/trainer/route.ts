@@ -11,8 +11,9 @@ export async function POST(req: Request) {
   const phone       = data.get('phone')?.toString().trim() ?? ''
   const nationality = data.get('nationality')?.toString().trim() ?? ''
   const residence   = data.get('residence')?.toString().trim() ?? ''
-  const languagesRaw = data.get('languages')?.toString() ?? '[]'
-  const cvName      = data.get('cvName')?.toString() || null   // just the filename, no binary
+  const languagesRaw       = data.get('languages')?.toString() ?? '[]'
+  const cvName             = data.get('cvName')?.toString() || null
+  const selectedCurricula  = JSON.parse(data.get('selectedCurricula')?.toString() ?? '[]') as string[]
 
   if (!name || !email || !password || !phone || !nationality || !residence) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -25,7 +26,7 @@ export async function POST(req: Request) {
 
   const passwordHash = await bcrypt.hash(password, 12)
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       name,
       email,
@@ -37,12 +38,25 @@ export async function POST(req: Request) {
           nationality,
           residence,
           languages:      languagesRaw,
-          cvUrl:          cvName ? `pending:${cvName}` : null,  // flag for admin to request
+          cvUrl:          cvName ? `pending:${cvName}` : null,
           approvalStatus: 'PENDING',
         },
       },
     },
+    include: { trainerProfile: true },
   })
+
+  // Create PENDING accreditations for selected curricula
+  if (selectedCurricula.length > 0 && user.trainerProfile) {
+    await prisma.trainerAccreditation.createMany({
+      data: selectedCurricula.map(curriculumId => ({
+        trainerId:    user.trainerProfile!.id,
+        curriculumId,
+        status:       'PENDING',
+      })),
+      skipDuplicates: true,
+    })
+  }
 
   return NextResponse.json({ success: true }, { status: 201 })
 }

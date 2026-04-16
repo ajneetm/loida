@@ -14,7 +14,8 @@ export async function POST(req: Request) {
   const foundedYear     = data.get('foundedYear')?.toString().trim() || null
   const employeeCount   = data.get('employeeCount')?.toString().trim() || null
   const address         = data.get('address')?.toString().trim() || null
-  const crName          = data.get('commercialRegisterName')?.toString() || null
+  const crName             = data.get('commercialRegisterName')?.toString() || null
+  const selectedCurricula  = data.get('selectedCurricula')?.toString() ?? '[]'
 
   if (!institutionName || !nationality || !email || !password || !founderName) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -45,6 +46,7 @@ export async function POST(req: Request) {
           employeeCount:         employeeCount ? parseInt(employeeCount) : null,
           address,
           commercialRegisterUrl,
+          curricula:      selectedCurricula,
           approvalStatus: 'PENDING',
         },
       },

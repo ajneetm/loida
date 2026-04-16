@@ -261,10 +261,26 @@ export function AccreditationButton({
     }
   }
 
+  const pending  = accreditations.filter(a => a.status === 'PENDING')
   const active   = accreditations.filter(a => a.status === 'ACTIVE')
-  const revoked  = accreditations.filter(a => a.status !== 'ACTIVE')
-  const assigned = new Set(accreditations.filter(a => a.status === 'ACTIVE').map(a => a.curriculum.id))
+  const revoked  = accreditations.filter(a => a.status === 'REVOKED' || a.status === 'SUSPENDED')
+  const assigned = new Set(accreditations.filter(a => a.status !== 'REVOKED' && a.status !== 'SUSPENDED').map(a => a.curriculum.id))
   const available = curricula.filter(c => !assigned.has(c.id))
+
+  async function handleStatusChange(accId: string, status: string) {
+    setRevoking(accId)
+    const res = await fetch(`/api/trainers/${trainerId}/accreditations/${accId}`, {
+      method:  'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ status }),
+    })
+    setRevoking(null)
+    if (res.ok) {
+      const updated = await res.json()
+      setAccreditations(p => p.map(a => a.id === accId ? updated : a))
+      router.refresh()
+    }
+  }
 
   const domainColor: Record<string, string> = {
     HARMONY:  'bg-purple-50 text-purple-700 border-purple-200',
@@ -310,6 +326,41 @@ export function AccreditationButton({
                 <p className="text-sm text-[#6B8F9E] text-center py-4">Loading…</p>
               ) : (
                 <>
+                  {/* Requested (PENDING) — trainer selected at registration */}
+                  {pending.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-2">Requested by Trainer</p>
+                      <div className="space-y-2">
+                        {pending.map(acc => (
+                          <div key={acc.id} className="flex items-center justify-between gap-3 px-3 py-2 bg-amber-50 border border-amber-200">
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[10px] px-1.5 py-0.5 border font-medium ${domainColor[acc.curriculum.domain] ?? 'bg-stone-50 text-stone-500 border-stone-200'}`}>
+                                {acc.curriculum.domain}
+                              </span>
+                              <span className="text-sm text-[#1C2B39] font-medium">{acc.curriculum.name}</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleStatusChange(acc.id, 'ACTIVE')}
+                                disabled={revoking === acc.id}
+                                className="text-green-600 hover:text-green-700 text-xs font-medium transition-colors disabled:opacity-40"
+                              >
+                                {revoking === acc.id ? '…' : 'Activate'}
+                              </button>
+                              <button
+                                onClick={() => handleStatusChange(acc.id, 'REVOKED')}
+                                disabled={revoking === acc.id}
+                                className="text-red-500 hover:text-red-600 text-xs transition-colors disabled:opacity-40"
+                              >
+                                Decline
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Active accreditations */}
                   <div>
                     <p className="text-xs font-semibold text-[#6B8F9E] uppercase tracking-widest mb-2">Active</p>
@@ -326,7 +377,7 @@ export function AccreditationButton({
                               <span className="text-sm text-[#1C2B39] font-medium">{acc.curriculum.name}</span>
                             </div>
                             <button
-                              onClick={() => handleRevoke(acc.id)}
+                              onClick={() => handleStatusChange(acc.id, 'REVOKED')}
                               disabled={revoking === acc.id}
                               className="text-[#6B8F9E] hover:text-red-500 text-xs transition-colors disabled:opacity-40"
                             >
@@ -338,7 +389,7 @@ export function AccreditationButton({
                     )}
                   </div>
 
-                  {/* Add curriculum */}
+                  {/* Add curriculum manually */}
                   {available.length > 0 && (
                     <div>
                       <p className="text-xs font-semibold text-[#6B8F9E] uppercase tracking-widest mb-2">Add Curriculum</p>
@@ -365,11 +416,7 @@ export function AccreditationButton({
                     </div>
                   )}
 
-                  {available.length === 0 && active.length > 0 && (
-                    <p className="text-xs text-[#6B8F9E]">All available curricula are already assigned.</p>
-                  )}
-
-                  {/* Revoked (collapsed) */}
+                  {/* Revoked */}
                   {revoked.length > 0 && (
                     <div>
                       <p className="text-xs font-semibold text-[#6B8F9E] uppercase tracking-widest mb-2">Revoked</p>
@@ -378,24 +425,11 @@ export function AccreditationButton({
                           <div key={acc.id} className="flex items-center justify-between gap-3 px-3 py-2 opacity-50">
                             <span className="text-sm text-[#1C2B39] line-through">{acc.curriculum.name}</span>
                             <button
-                              onClick={async () => {
-                                setAdding(true)
-                                const res = await fetch(`/api/trainers/${trainerId}/accreditations`, {
-                                  method:  'POST',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body:    JSON.stringify({ curriculumId: acc.curriculum.id }),
-                                })
-                                setAdding(false)
-                                if (res.ok) {
-                                  const updated = await res.json()
-                                  setAccreditations(p => p.map(a => a.id === acc.id ? updated : a))
-                                  router.refresh()
-                                }
-                              }}
-                              disabled={adding}
+                              onClick={() => handleStatusChange(acc.id, 'ACTIVE')}
+                              disabled={revoking === acc.id}
                               className="text-green-600 hover:text-green-700 text-xs transition-colors disabled:opacity-40"
                             >
-                              Restore
+                              {revoking === acc.id ? '…' : 'Restore'}
                             </button>
                           </div>
                         ))}

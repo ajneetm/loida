@@ -1,6 +1,13 @@
+import { prisma } from '@/lib/prisma'
 import TrainerRegisterForm from './TrainerRegisterForm'
 
-export default function TrainerRegisterPage() {
+export default async function TrainerRegisterPage() {
+  const curricula = await prisma.curriculum.findMany({
+    where:   { isActive: true },
+    select:  { id: true, name: true, domain: true },
+    orderBy: { name: 'asc' },
+  })
+
   return (
     <div className="min-h-screen bg-[#F8F7F4] flex items-center justify-center p-4">
       <div className="w-full max-w-xl space-y-6">
@@ -11,7 +18,7 @@ export default function TrainerRegisterPage() {
             Fill in your details. Your application will be reviewed before approval.
           </p>
         </div>
-        <TrainerRegisterForm />
+        <TrainerRegisterForm curricula={curricula} />
       </div>
     </div>
   )

@@ -273,6 +273,7 @@ model Institution {
   address                String?
   founderName            String
   commercialRegisterUrl  String?
+  curricula              String    @default("[]")       // JSON array of curriculum IDs
   approvalStatus         String    @default("PENDING") // PENDING | APPROVED | REJECTED
   approvedAt             DateTime?
   approvedById           String?

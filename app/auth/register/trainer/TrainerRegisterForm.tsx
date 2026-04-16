@@ -4,17 +4,26 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { COUNTRIES } from '@/lib/countries'
 
+type Curriculum = { id: string; name: string; domain: string }
+
 const LANGUAGES = [
   'Arabic','English','French','Spanish','German',
   'Turkish','Urdu','Hindi','Malay','Mandarin','Italian','Portuguese','Russian',
 ]
 
-export default function TrainerRegisterForm() {
+const DOMAIN_STYLE: Record<string, string> = {
+  HARMONY:  'border-purple-300 bg-purple-50 text-purple-800',
+  CAREER:   'border-blue-300 bg-blue-50 text-blue-800',
+  BUSINESS: 'border-amber-300 bg-amber-50 text-amber-800',
+}
+
+export default function TrainerRegisterForm({ curricula }: { curricula: Curriculum[] }) {
   const [step, setStep] = useState(1)
   const [form, setForm] = useState({
     name: '', email: '', password: '', confirmPassword: '',
     phone: '', nationality: '', residence: '',
   })
+  const [selectedCurricula, setSelectedCurricula] = useState<string[]>([])
   const [languages, setLanguages] = useState<string[]>([])
   const [cvFile, setCvFile]       = useState<File | null>(null)
   const [errors, setErrors]       = useState<Record<string, string>>({})
@@ -24,6 +33,9 @@ export default function TrainerRegisterForm() {
   function set(k: string, v: string) { setForm(f => ({ ...f, [k]: v })) }
   function toggleLang(l: string) {
     setLanguages(p => p.includes(l) ? p.filter(x => x !== l) : [...p, l])
+  }
+  function toggleCurriculum(id: string) {
+    setSelectedCurricula(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id])
   }
 
   function validateStep1() {
@@ -37,9 +49,10 @@ export default function TrainerRegisterForm() {
 
   function validateStep2() {
     const e: Record<string, string> = {}
-    if (!form.phone.trim())       e.phone       = 'Required'
-    if (!form.nationality.trim()) e.nationality = 'Required'
-    if (!form.residence.trim())   e.residence   = 'Required'
+    if (!form.phone.trim())             e.phone       = 'Required'
+    if (!form.nationality.trim())       e.nationality = 'Required'
+    if (!form.residence.trim())         e.residence   = 'Required'
+    if (selectedCurricula.length === 0) e.curricula   = 'Select at least one curriculum'
     return e
   }
 
@@ -65,7 +78,8 @@ export default function TrainerRegisterForm() {
 
     const body = new FormData()
     Object.entries(form).forEach(([k, v]) => body.append(k, v))
-    body.append('languages', JSON.stringify(languages))
+    body.append('languages',         JSON.stringify(languages))
+    body.append('selectedCurricula', JSON.stringify(selectedCurricula))
     if (cvFile) body.append('cvName', cvFile.name)
 
     const res = await fetch('/api/auth/register/trainer', { method: 'POST', body })
@@ -112,7 +126,7 @@ export default function TrainerRegisterForm() {
           <div className="bg-red-50 border border-red-100 text-red-600 text-sm p-3 mb-4">{errors.form}</div>
         )}
 
-        {/* Step 1 */}
+        {/* Step 1 — Account */}
         {step === 1 && (
           <div className="space-y-4">
             <Field label="Full Name" error={errors.name}>
@@ -140,7 +154,7 @@ export default function TrainerRegisterForm() {
           </div>
         )}
 
-        {/* Step 2 */}
+        {/* Step 2 — Details + Curricula */}
         {step === 2 && (
           <div className="space-y-4">
             <Field label="Phone" error={errors.phone}>
@@ -161,6 +175,45 @@ export default function TrainerRegisterForm() {
                 </select>
               </Field>
             </div>
+
+            <Field label="Curricula I Want to Teach" error={errors.curricula}>
+              {curricula.length === 0 ? (
+                <p className="text-sm text-[#6B8F9E]">No curricula available yet.</p>
+              ) : (
+                <div className="grid grid-cols-1 gap-2 mt-1">
+                  {curricula.map(c => {
+                    const sel = selectedCurricula.includes(c.id)
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => toggleCurriculum(c.id)}
+                        className={`flex items-center gap-3 px-4 py-3 border text-left transition-colors ${
+                          sel
+                            ? 'border-[#1C2B39] bg-[#1C2B39]/5'
+                            : 'border-[#E8E4DC] hover:border-[#1C2B39]'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 border-2 flex-shrink-0 flex items-center justify-center ${
+                          sel ? 'border-[#1C2B39] bg-[#1C2B39]' : 'border-[#E8E4DC]'
+                        }`}>
+                          {sel && <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
+                          </svg>}
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-sm font-medium text-[#1C2B39]">{c.name}</span>
+                          <span className={`ml-2 text-[10px] px-1.5 py-0.5 border font-medium ${DOMAIN_STYLE[c.domain] ?? 'border-stone-200 bg-stone-50 text-stone-600'}`}>
+                            {c.domain}
+                          </span>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </Field>
+
             <div className="flex gap-3">
               <button type="button" onClick={() => setStep(1)}
                 className="flex-1 border border-[#E8E4DC] text-[#1C2B39] py-3 text-sm hover:bg-[#F8F7F4] transition-colors">
@@ -174,7 +227,7 @@ export default function TrainerRegisterForm() {
           </div>
         )}
 
-        {/* Step 3 */}
+        {/* Step 3 — Languages & CV */}
         {step === 3 && (
           <form onSubmit={handleSubmit} className="space-y-4">
             <Field label="Languages I Speak" error={errors.languages}>

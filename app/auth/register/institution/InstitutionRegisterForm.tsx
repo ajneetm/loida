@@ -4,7 +4,15 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { COUNTRIES } from '@/lib/countries'
 
-export default function InstitutionRegisterForm() {
+type Curriculum = { id: string; name: string; domain: string }
+
+const DOMAIN_STYLE: Record<string, string> = {
+  HARMONY:  'border-purple-300 bg-purple-50 text-purple-800',
+  CAREER:   'border-blue-300 bg-blue-50 text-blue-800',
+  BUSINESS: 'border-amber-300 bg-amber-50 text-amber-800',
+}
+
+export default function InstitutionRegisterForm({ curricula }: { curricula: Curriculum[] }) {
   const [step, setStep] = useState(1)
   const [form, setForm] = useState({
     institutionName: '', nationality: '', email: '',
@@ -12,12 +20,16 @@ export default function InstitutionRegisterForm() {
     website: '', foundedYear: '', employeeCount: '',
     address: '', founderName: '',
   })
+  const [selectedCurricula, setSelectedCurricula] = useState<string[]>([])
   const [crFile, setCrFile]   = useState<File | null>(null)
   const [errors, setErrors]   = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
   const [done, setDone]       = useState(false)
 
   function set(k: string, v: string) { setForm(f => ({ ...f, [k]: v })) }
+  function toggleCurriculum(id: string) {
+    setSelectedCurricula(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id])
+  }
 
   function validateStep1() {
     const e: Record<string, string> = {}
@@ -41,12 +53,21 @@ export default function InstitutionRegisterForm() {
 
   function validateStep3() {
     const e: Record<string, string> = {}
+    if (selectedCurricula.length === 0) e.curricula = 'Select at least one curriculum'
+    return e
+  }
+
+  function validateStep4() {
+    const e: Record<string, string> = {}
     if (!crFile) e.cr = 'Commercial register is required'
     return e
   }
 
   function next() {
-    const errs = step === 1 ? validateStep1() : validateStep2()
+    const errs =
+      step === 1 ? validateStep1() :
+      step === 2 ? validateStep2() :
+      validateStep3()
     if (Object.keys(errs).length) { setErrors(errs); return }
     setErrors({})
     setStep(s => s + 1)
@@ -54,13 +75,14 @@ export default function InstitutionRegisterForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const errs = validateStep3()
+    const errs = validateStep4()
     if (Object.keys(errs).length) { setErrors(errs); return }
     setErrors({})
     setLoading(true)
 
     const body = new FormData()
     Object.entries(form).forEach(([k, v]) => body.append(k, v))
+    body.append('selectedCurricula', JSON.stringify(selectedCurricula))
     if (crFile) body.append('commercialRegisterName', crFile.name)
 
     const res = await fetch('/api/auth/register/institution', { method: 'POST', body })
@@ -85,11 +107,13 @@ export default function InstitutionRegisterForm() {
     </div>
   )
 
+  const steps = ['Account', 'Institution', 'Curricula', 'Documents']
+
   return (
     <div className="bg-white border border-[#E8E4DC]">
       {/* Progress */}
       <div className="flex border-b border-[#E8E4DC]">
-        {['Account', 'Institution', 'Documents'].map((label, i) => (
+        {steps.map((label, i) => (
           <div key={i} className={`flex-1 py-3 text-center text-xs font-medium border-b-2 transition-colors ${
             step === i + 1
               ? 'border-[#1C2B39] text-[#1C2B39]'
@@ -107,7 +131,7 @@ export default function InstitutionRegisterForm() {
           <div className="bg-red-50 border border-red-100 text-red-600 text-sm p-3 mb-4">{errors.form}</div>
         )}
 
-        {/* Step 1 */}
+        {/* Step 1 — Account */}
         {step === 1 && (
           <div className="space-y-4">
             <Field label="Institution Name" error={errors.institutionName}>
@@ -141,7 +165,7 @@ export default function InstitutionRegisterForm() {
           </div>
         )}
 
-        {/* Step 2 */}
+        {/* Step 2 — Institution Details */}
         {step === 2 && (
           <div className="space-y-4">
             <Field label="Website" error={errors.website}>
@@ -179,25 +203,76 @@ export default function InstitutionRegisterForm() {
           </div>
         )}
 
-        {/* Step 3 */}
+        {/* Step 3 — Curricula */}
         {step === 3 && (
+          <div className="space-y-4">
+            <Field label="Curricula We Offer" error={errors.curricula}>
+              <p className="text-xs text-[#6B8F9E] mb-2">Select the training programmes your institution will deliver.</p>
+              {curricula.length === 0 ? (
+                <p className="text-sm text-[#6B8F9E]">No curricula available yet.</p>
+              ) : (
+                <div className="grid grid-cols-1 gap-2">
+                  {curricula.map(c => {
+                    const sel = selectedCurricula.includes(c.id)
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => toggleCurriculum(c.id)}
+                        className={`flex items-center gap-3 px-4 py-3 border text-left transition-colors ${
+                          sel
+                            ? 'border-[#1C2B39] bg-[#1C2B39]/5'
+                            : 'border-[#E8E4DC] hover:border-[#1C2B39]'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 border-2 flex-shrink-0 flex items-center justify-center ${
+                          sel ? 'border-[#1C2B39] bg-[#1C2B39]' : 'border-[#E8E4DC]'
+                        }`}>
+                          {sel && <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
+                          </svg>}
+                        </div>
+                        <div>
+                          <span className="text-sm font-medium text-[#1C2B39]">{c.name}</span>
+                          <span className={`ml-2 text-[10px] px-1.5 py-0.5 border font-medium ${DOMAIN_STYLE[c.domain] ?? 'border-stone-200 bg-stone-50 text-stone-600'}`}>
+                            {c.domain}
+                          </span>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </Field>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setStep(2)}
+                className="flex-1 border border-[#E8E4DC] text-[#1C2B39] py-3 text-sm hover:bg-[#F8F7F4] transition-colors">
+                ← Back
+              </button>
+              <button type="button" onClick={next}
+                className="flex-1 bg-[#1C2B39] text-white py-3 text-sm font-medium hover:bg-[#2a3f52] transition-colors">
+                Continue →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4 — Documents */}
+        {step === 4 && (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="bg-[#F8F7F4] border border-[#E8E4DC] p-4 text-sm text-[#6B8F9E] space-y-1">
               <p className="font-medium text-[#1C2B39]">Commercial Register Requirements</p>
               <p>• Must be a valid and current document</p>
               <p>• Accepted formats: PDF, JPG, PNG</p>
-              <p>• Maximum size: 10MB</p>
             </div>
             <Field label="Commercial Register" error={errors.cr}>
               <input type="file" accept=".pdf,.jpg,.jpeg,.png"
                 onChange={e => setCrFile(e.target.files?.[0] ?? null)}
                 className="w-full border border-[#E8E4DC] px-3 py-2.5 text-sm text-[#6B8F9E] file:mr-3 file:border-0 file:bg-[#1C2B39] file:text-white file:px-3 file:py-1.5 file:text-xs cursor-pointer" />
-              {crFile && (
-                <p className="text-xs text-green-600 mt-1">✓ {crFile.name}</p>
-              )}
+              {crFile && <p className="text-xs text-green-600 mt-1">✓ {crFile.name}</p>}
             </Field>
             <div className="flex gap-3">
-              <button type="button" onClick={() => setStep(2)}
+              <button type="button" onClick={() => setStep(3)}
                 className="flex-1 border border-[#E8E4DC] text-[#1C2B39] py-3 text-sm hover:bg-[#F8F7F4] transition-colors">
                 ← Back
               </button>

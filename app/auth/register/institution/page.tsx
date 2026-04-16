@@ -1,6 +1,13 @@
+import { prisma } from '@/lib/prisma'
 import InstitutionRegisterForm from './InstitutionRegisterForm'
 
-export default function InstitutionRegisterPage() {
+export default async function InstitutionRegisterPage() {
+  const curricula = await prisma.curriculum.findMany({
+    where:   { isActive: true },
+    select:  { id: true, name: true, domain: true },
+    orderBy: { name: 'asc' },
+  })
+
   return (
     <div className="min-h-screen bg-[#F8F7F4] flex items-center justify-center p-4">
       <div className="w-full max-w-xl space-y-6">
@@ -11,7 +18,7 @@ export default function InstitutionRegisterPage() {
             Register your organization. Your application will be reviewed before approval.
           </p>
         </div>
-        <InstitutionRegisterForm />
+        <InstitutionRegisterForm curricula={curricula} />
       </div>
     </div>
   )
