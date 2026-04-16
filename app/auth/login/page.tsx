@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -33,8 +34,8 @@ export default function LoginPage() {
     const role        = sessionData?.user?.role
     const approval    = sessionData?.user?.approvalStatus
 
-    if (role === 'ADMIN')   { router.push('/admin');   return }
-    if (role === 'AGENT')   { router.push('/agent');   return }
+    if (role === 'ADMIN')                          { router.push('/admin');       return }
+    if (role === 'AGENT' || role === 'INSTITUTION') { router.push('/institution'); return }
     if (role === 'TRAINER') {
       if (approval === 'PENDING')  { router.push('/auth/pending');  return }
       if (approval === 'REJECTED') { router.push('/auth/rejected'); return }
@@ -92,8 +93,11 @@ export default function LoginPage() {
         </button>
       </form>
 
-      <p className="text-center text-white/20 text-xs mt-8">
-        Contact your administrator if you need access.
+      <p className="text-center text-white/30 text-xs mt-8">
+        New to Loida British?{' '}
+        <Link href="/auth/register" className="text-white/60 hover:text-white underline transition-colors">
+          Register as Trainer or Institution
+        </Link>
       </p>
     </div>
   )
