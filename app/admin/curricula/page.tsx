@@ -2,7 +2,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Plus, BookOpen } from 'lucide-react'
+import { Plus, BookOpen, Settings } from 'lucide-react'
 import DeleteCurriculumButton from './DeleteCurriculumButton'
 
 export default async function AdminCurriculaPage() {
@@ -52,9 +52,16 @@ export default async function AdminCurriculaPage() {
                 className="text-xs text-[#6B8F9E] hover:text-[#1C2B39] truncate block">
                 {c.siteUrl}
               </a>
-              <div className="pt-2 border-t border-[#E8E4DC] text-sm text-[#1C2B39]">
-                <span className="font-semibold">{c._count.accreditations}</span>
-                <span className="text-[#6B8F9E]"> accredited trainer{c._count.accreditations !== 1 ? 's' : ''}</span>
+              <div className="pt-2 border-t border-[#E8E4DC] flex items-center justify-between">
+                <div className="text-sm text-[#1C2B39]">
+                  <span className="font-semibold">{c._count.accreditations}</span>
+                  <span className="text-[#6B8F9E]"> trainer{c._count.accreditations !== 1 ? 's' : ''}</span>
+                </div>
+                <Link href={`/admin/curricula/${c.id}`}
+                  className="flex items-center gap-1 text-xs text-[#6B8F9E] hover:text-[#1C2B39] transition-colors">
+                  <Settings className="w-3.5 h-3.5" />
+                  Manage
+                </Link>
               </div>
             </div>
           ))

@@ -257,6 +257,7 @@ model Curriculum {
   createdAt   DateTime @default(now())
 
   accreditations TrainerAccreditation[]
+  workshops      Workshop[]
 }
 
 model Agent {
@@ -306,6 +307,17 @@ model TrainerAccreditation {
   curriculum Curriculum @relation(fields: [curriculumId], references: [id])
 
   @@unique([trainerId, curriculumId])
+}
+
+model Workshop {
+  id           String   @id @default(cuid())
+  curriculumId String
+  title        String
+  date         DateTime
+  location     String?
+  createdAt    DateTime @default(now())
+
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
 }
 
 model CertificateRequest {
