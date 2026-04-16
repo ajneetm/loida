@@ -13,6 +13,7 @@ type Message = {
   notes:      string | null
   status:     string
   createdAt:  string
+  updatedAt:  string
 }
 
 const STATUS_META: Record<string, { label: string; color: string; bg: string }> = {

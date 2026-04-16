@@ -11,5 +11,5 @@ export default async function StaffPage() {
     ],
   })
 
-  return <MessagesClient initialMessages={messages} />
+  return <MessagesClient initialMessages={messages.map(m => ({ ...m, createdAt: m.createdAt.toISOString(), updatedAt: m.updatedAt.toISOString() }))} />
 }
