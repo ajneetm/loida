@@ -1,8 +1,7 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import { Award, Plus } from 'lucide-react'
+import { Award } from 'lucide-react'
 
 export default async function TrainerCertificatesPage() {
   const session = await auth()
@@ -21,35 +20,19 @@ export default async function TrainerCertificatesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-[#1C2B39]">Certificate Requests</h1>
-          <p className="text-sm text-[#6B8F9E] mt-1">{requests.length} total request{requests.length !== 1 ? 's' : ''}</p>
-        </div>
-        <Link
-          href="/trainer/certificates/new"
-          className="flex items-center gap-2 bg-[#1C2B39] text-white px-4 py-2 text-sm hover:bg-[#2a3f52] transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          New Request
-        </Link>
+      <div>
+        <h1 className="text-2xl font-semibold text-[#1C2B39]">Certificate Requests</h1>
+        <p className="text-sm text-[#6B8F9E] mt-1">{requests.length} total request{requests.length !== 1 ? 's' : ''}</p>
       </div>
 
       <div className="bg-white border border-[#E8E4DC] overflow-hidden">
         {requests.length === 0 ? (
-          <div className="p-16 text-center space-y-4">
+          <div className="p-16 text-center space-y-3">
             <Award className="w-12 h-12 mx-auto text-[#6B8F9E] opacity-30" />
-            <div>
-              <p className="text-[#1C2B39] font-medium">No certificate requests yet</p>
-              <p className="text-sm text-[#6B8F9E] mt-1">Submit a request for a trainee who completed your workshop</p>
-            </div>
-            <Link
-              href="/trainer/certificates/new"
-              className="inline-flex items-center gap-2 bg-[#1C2B39] text-white px-5 py-2.5 text-sm hover:bg-[#2a3f52] transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              New Request
-            </Link>
+            <p className="text-[#1C2B39] font-medium">No certificate requests yet</p>
+            <p className="text-sm text-[#6B8F9E]">
+              Go to <strong>Workshops</strong> → select a workshop → choose registrants to request certificates
+            </p>
           </div>
         ) : (
           <div className="divide-y divide-[#E8E4DC]">

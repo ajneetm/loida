@@ -1,8 +1,11 @@
-'use client'
+import { redirect } from 'next/navigation'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Plus, Trash2 } from 'lucide-react'
+export default function Page() {
+  redirect('/trainer/certificates')
+}
+
+// ↓ dead code kept only to satisfy module shape — remove if unused
+import type { } from 'react'
 
 interface Curriculum { id: string; name: string; domain: string }
 interface Trainee    { name: string; email: string }
