@@ -9,13 +9,11 @@ const LANGUAGES = [
   'Turkish','Urdu','Hindi','Malay','Mandarin','Italian','Portuguese','Russian',
 ]
 
-interface Institution { id: string; institutionName: string; nationality: string }
-
-export default function TrainerRegisterForm({ institutions }: { institutions: Institution[] }) {
+export default function TrainerRegisterForm() {
   const [step, setStep] = useState(1)
   const [form, setForm] = useState({
     name: '', email: '', password: '', confirmPassword: '',
-    phone: '', nationality: '', residence: '', institutionId: '',
+    phone: '', nationality: '', residence: '',
   })
   const [languages, setLanguages] = useState<string[]>([])
   const [cvFile, setCvFile]       = useState<File | null>(null)
@@ -164,14 +162,6 @@ export default function TrainerRegisterForm({ institutions }: { institutions: In
                 </select>
               </Field>
             </div>
-            <Field label="Institution">
-              <select value={form.institutionId} onChange={e => set('institutionId', e.target.value)} className={inp}>
-                <option value="">— Independent (no institution) —</option>
-                {institutions.map(i => (
-                  <option key={i.id} value={i.id}>{i.institutionName} · {i.nationality}</option>
-                ))}
-              </select>
-            </Field>
             <div className="flex gap-3">
               <button type="button" onClick={() => setStep(1)}
                 className="flex-1 border border-[#E8E4DC] text-[#1C2B39] py-3 text-sm hover:bg-[#F8F7F4] transition-colors">
