@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { CalendarDays, MapPin, Users, ChevronLeft } from 'lucide-react'
 import MaterialsManager from './MaterialsManager'
 import RegistrationsList from './RegistrationsList'
+import CopyLinkButton from './CopyLinkButton'
 
 export default async function WorkshopDetailPage({
   params,
@@ -53,12 +54,15 @@ export default async function WorkshopDetailPage({
             {workshop.registrations.length} registered
           </span>
         </div>
-        {workshop.registrationUrl && (
-          <a href={workshop.registrationUrl} target="_blank" rel="noopener noreferrer"
-            className="inline-block text-xs text-[#022269] hover:underline mt-1">
-            Registration Link ↗
-          </a>
-        )}
+        <div className="flex items-center gap-3 pt-1">
+          <CopyLinkButton workshopId={workshop.id} />
+          {workshop.registrationUrl && (
+            <a href={workshop.registrationUrl} target="_blank" rel="noopener noreferrer"
+              className="text-xs text-[#6B8F9E] hover:text-[#1C2B39] transition-colors">
+              External link ↗
+            </a>
+          )}
+        </div>
       </div>
 
       {/* Materials */}

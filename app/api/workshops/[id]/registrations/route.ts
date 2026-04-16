@@ -11,8 +11,23 @@ const schema = z.object({
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
   const session = await auth()
-  if ((session?.user as any)?.role !== 'ADMIN') {
+  const role    = (session?.user as any)?.role
+  const userId  = session?.user?.id
+
+  if (!userId || !['ADMIN', 'TRAINER'].includes(role)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  // Trainer: verify they are accredited for this workshop's curriculum
+  if (role === 'TRAINER') {
+    const workshop = await prisma.workshop.findUnique({ where: { id: params.id } })
+    if (!workshop) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    const trainer = await prisma.trainer.findUnique({ where: { userId } })
+    if (!trainer) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    const acc = await prisma.trainerAccreditation.findUnique({
+      where: { trainerId_curriculumId: { trainerId: trainer.id, curriculumId: workshop.curriculumId } },
+    })
+    if (!acc || acc.status !== 'ACTIVE') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
   const registrations = await prisma.workshopRegistration.findMany({

@@ -5,10 +5,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
-import { LayoutDashboard, Award, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Award, CalendarDays, Menu, X } from 'lucide-react'
 
 const navItems = [
-  { label: 'Dashboard',           href: '/trainer',              icon: LayoutDashboard },
+  { label: 'Dashboard',            href: '/trainer',              icon: LayoutDashboard },
+  { label: 'Workshops',            href: '/trainer/workshops',    icon: CalendarDays },
   { label: 'Certificate Requests', href: '/trainer/certificates', icon: Award },
 ]
 
