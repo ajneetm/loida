@@ -1,5 +1,5 @@
-// GET  /api/trainers/[id]/accreditations  → list trainer's curricula
-// POST /api/trainers/[id]/accreditations  → accredit trainer for a curriculum (agent/admin)
+// GET  /api/trainers/[id]/accreditations
+// POST /api/trainers/[id]/accreditations
 
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
@@ -17,13 +17,12 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
 
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Trainers can see their own accreditations
   if (role === 'TRAINER') {
     const trainer = await prisma.trainer.findUnique({ where: { userId } })
     if (!trainer || trainer.id !== params.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
-  } else if (!['ADMIN', 'AGENT'].includes(role)) {
+  } else if (!['ADMIN', 'INSTITUTION'].includes(role)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
@@ -41,15 +40,14 @@ export async function POST(req: Request, { params }: { params: { id: string } })
   const role    = (session?.user as any)?.role
   const userId  = session?.user?.id
 
-  if (!userId || !['ADMIN', 'AGENT'].includes(role)) {
+  if (!userId || !['ADMIN', 'INSTITUTION'].includes(role)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  // Agent can only manage their own trainers
-  if (role === 'AGENT') {
-    const agent   = await prisma.agent.findUnique({ where: { userId } })
-    const trainer = await prisma.trainer.findUnique({ where: { id: params.id } })
-    if (!agent || !trainer || trainer.agentId !== agent.id) {
+  if (role === 'INSTITUTION') {
+    const institution = await prisma.institution.findUnique({ where: { userId } })
+    const trainer     = await prisma.trainer.findUnique({ where: { id: params.id } })
+    if (!institution || !trainer || trainer.institutionId !== institution.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
   }
@@ -60,7 +58,6 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  // Enforce max 2 active accreditations per trainer
   const activeCount = await prisma.trainerAccreditation.count({
     where: { trainerId: params.id, status: 'ACTIVE' },
   })
@@ -83,8 +80,6 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     },
     include: { curriculum: true },
   })
-
-  // TODO: send welcome email to trainer for this curriculum
 
   return NextResponse.json(accreditation, { status: 201 })
 }

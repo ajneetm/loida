@@ -1,5 +1,5 @@
-// GET  /api/trainers  → list trainers (admin: all, agent: own trainers)
-// POST /api/trainers  → create trainer (agent only)
+// GET  /api/trainers  → list trainers (admin: all, institution: own trainers)
+// POST /api/trainers  → create trainer (institution/admin only)
 
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
@@ -8,10 +8,13 @@ import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 
 const createTrainerSchema = z.object({
-  name:         z.string().min(2),
-  email:        z.string().email(),
-  phone:        z.string().optional(),
+  name:          z.string().min(2),
+  email:         z.string().email(),
+  phone:         z.string().min(5),
+  nationality:   z.string().min(2),
+  residence:     z.string().min(2),
   curriculumIds: z.array(z.string()).min(1, 'Select at least one curriculum'),
+  institutionId: z.string().optional(),
 })
 
 export async function GET() {
@@ -19,23 +22,23 @@ export async function GET() {
   const role    = (session?.user as any)?.role
   const userId  = session?.user?.id
 
-  if (!userId || !['ADMIN', 'AGENT'].includes(role)) {
+  if (!userId || !['ADMIN', 'INSTITUTION'].includes(role)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  let where = {}
+  let where: any = {}
 
-  if (role === 'AGENT') {
-    const agent = await prisma.agent.findUnique({ where: { userId } })
-    if (!agent) return NextResponse.json({ error: 'Agent not found' }, { status: 404 })
-    where = { agentId: agent.id }
+  if (role === 'INSTITUTION') {
+    const institution = await prisma.institution.findUnique({ where: { userId } })
+    if (!institution) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    where = { institutionId: institution.id }
   }
 
   const trainers = await prisma.trainer.findMany({
     where,
     include: {
-      user:          { select: { id: true, name: true, email: true, createdAt: true } },
-      agent:         { include: { user: { select: { name: true } } } },
+      user:           { select: { id: true, name: true, email: true, createdAt: true } },
+      institution:    { include: { user: { select: { name: true } } } },
       accreditations: { include: { curriculum: true } },
     },
     orderBy: { createdAt: 'desc' },
@@ -49,7 +52,7 @@ export async function POST(req: Request) {
   const role    = (session?.user as any)?.role
   const userId  = session?.user?.id
 
-  if (!userId || !['ADMIN', 'AGENT'].includes(role)) {
+  if (!userId || !['ADMIN', 'INSTITUTION'].includes(role)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
@@ -59,18 +62,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  // Resolve agentId
-  let agentId: string
-  if (role === 'AGENT') {
-    const agent = await prisma.agent.findUnique({ where: { userId } })
-    if (!agent || !agent.isActive) {
-      return NextResponse.json({ error: 'Agent account inactive' }, { status: 403 })
+  // Resolve institutionId
+  let institutionId: string | undefined
+  if (role === 'INSTITUTION') {
+    const institution = await prisma.institution.findUnique({ where: { userId } })
+    if (!institution || !institution.isActive) {
+      return NextResponse.json({ error: 'Institution account inactive' }, { status: 403 })
     }
-    agentId = agent.id
+    institutionId = institution.id
   } else {
-    // Admin must pass agentId
-    agentId = body.agentId
-    if (!agentId) return NextResponse.json({ error: 'agentId required' }, { status: 400 })
+    institutionId = parsed.data.institutionId
   }
 
   const existing = await prisma.user.findUnique({ where: { email: parsed.data.email } })
@@ -78,11 +79,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Email already in use' }, { status: 409 })
   }
 
-  // Generate a temporary password
-  const tempPassword   = Math.random().toString(36).slice(-10)
-  const passwordHash   = await bcrypt.hash(tempPassword, 12)
+  const tempPassword = Math.random().toString(36).slice(-10)
+  const passwordHash = await bcrypt.hash(tempPassword, 12)
 
-  // Verify all curriculumIds exist and are active
   const curricula = await prisma.curriculum.findMany({
     where: { id: { in: parsed.data.curriculumIds }, isActive: true },
   })
@@ -98,8 +97,10 @@ export async function POST(req: Request) {
       role:         'TRAINER',
       trainerProfile: {
         create: {
-          agentId,
-          phone: parsed.data.phone,
+          institutionId,
+          phone:       parsed.data.phone,
+          nationality: parsed.data.nationality,
+          residence:   parsed.data.residence,
           accreditations: {
             create: parsed.data.curriculumIds.map(id => ({ curriculumId: id })),
           },

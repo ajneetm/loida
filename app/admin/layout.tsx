@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  LayoutDashboard, Users, UserCheck, GraduationCap,
+  LayoutDashboard, Users, Building2, GraduationCap,
   BookOpen, Award, FileCheck, ChevronLeft, Menu, X, LogOut
 } from 'lucide-react'
 
@@ -12,23 +12,23 @@ const navGroups = [
   {
     label: 'Overview',
     items: [
-      { label: 'Dashboard',     href: '/admin',                icon: LayoutDashboard },
+      { label: 'Dashboard',     href: '/admin',                    icon: LayoutDashboard },
     ],
   },
   {
     label: 'Trainer Network',
     items: [
-      { label: 'Agents',        href: '/admin/agents',         icon: UserCheck },
-      { label: 'Trainers',      href: '/admin/trainers',       icon: GraduationCap },
-      { label: 'Curricula',     href: '/admin/curricula',      icon: BookOpen },
-      { label: 'Certificates',  href: '/admin/certificates',   icon: FileCheck },
+      { label: 'Institutions',  href: '/admin/institutions',       icon: Building2 },
+      { label: 'Trainers',      href: '/admin/trainers',           icon: GraduationCap },
+      { label: 'Curricula',     href: '/admin/curricula',          icon: BookOpen },
+      { label: 'Certificates',  href: '/admin/certificates',       icon: FileCheck },
     ],
   },
   {
     label: 'Platform',
     items: [
-      { label: 'Users',         href: '/admin/users',          icon: Users },
-      { label: 'Coaches',       href: '/admin/coaches',        icon: Award },
+      { label: 'Users',         href: '/admin/users',              icon: Users },
+      { label: 'Coaches',       href: '/admin/coaches',            icon: Award },
     ],
   },
 ]

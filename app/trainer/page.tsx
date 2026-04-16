@@ -11,7 +11,7 @@ export default async function TrainerDashboard() {
   const trainer = await prisma.trainer.findUnique({
     where: { userId: session.user.id },
     include: {
-      agent:          { include: { user: { select: { name: true } } } },
+      institution:    { include: { user: { select: { name: true } } } },
       accreditations: {
         include: { curriculum: true },
         orderBy: { createdAt: 'asc' },
@@ -33,7 +33,9 @@ export default async function TrainerDashboard() {
       <div>
         <h1 className="text-2xl font-semibold text-[#1C2B39]">Trainer Dashboard</h1>
         <p className="text-sm text-[#6B8F9E] mt-1">
-          Registered via agent: {trainer.agent.user.name}
+          {trainer.institution
+            ? <>Institution: {trainer.institution.user.name}</>
+            : 'Independent Trainer'}
         </p>
       </div>
 
@@ -43,14 +45,12 @@ export default async function TrainerDashboard() {
         <StatCard icon={<Award className="w-5 h-5" />}    label="Pending"               value={pendingCerts} color="amber" />
       </div>
 
-      {/* Curricula */}
       <div className="space-y-3">
         <h2 className="font-medium text-[#1C2B39]">My Curricula</h2>
         {activeAccreditations.length === 0 ? (
-          <div className="bg-white rounded-xl border border-[#E8E4DC] p-10 text-center text-[#6B8F9E]">
+          <div className="bg-white border border-[#E8E4DC] p-10 text-center text-[#6B8F9E]">
             <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
             <p>You have not been accredited for any curriculum yet.</p>
-            <p className="text-xs mt-1">Contact your agent to get assigned.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -61,9 +61,8 @@ export default async function TrainerDashboard() {
         )}
       </div>
 
-      {/* Recent Certificate Requests */}
       {trainer.certificateRequests.length > 0 && (
-        <div className="bg-white rounded-xl border border-[#E8E4DC] overflow-hidden">
+        <div className="bg-white border border-[#E8E4DC] overflow-hidden">
           <div className="px-6 py-4 border-b border-[#E8E4DC] flex items-center justify-between">
             <h2 className="font-medium text-[#1C2B39]">Recent Certificate Requests</h2>
             <Link href="/trainer/certificates" className="text-xs text-[#6B8F9E] hover:text-[#1C2B39]">
@@ -83,19 +82,6 @@ export default async function TrainerDashboard() {
           </div>
         </div>
       )}
-
-      <div className="flex gap-3">
-        <Link href="/trainer/certificates/new"
-          className="flex items-center gap-2 bg-[#1C2B39] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#2a3f52] transition-colors">
-          <Award className="w-4 h-4" />
-          Request Certificate
-        </Link>
-        <Link href="/trainer/certificates"
-          className="flex items-center gap-2 border border-[#E8E4DC] text-[#1C2B39] px-4 py-2 rounded-lg text-sm hover:bg-[#F8F7F4] transition-colors">
-          <FileText className="w-4 h-4" />
-          All Requests
-        </Link>
-      </div>
     </div>
   )
 }
@@ -108,7 +94,7 @@ function CurriculumCard({ accreditation }: { accreditation: any }) {
   }
   const color = domainColors[accreditation.curriculum.domain] || 'bg-[#1C2B39]'
   return (
-    <div className="bg-white rounded-xl border border-[#E8E4DC] overflow-hidden">
+    <div className="bg-white border border-[#E8E4DC] overflow-hidden">
       <div className={`${color} px-5 py-4`}>
         <h3 className="text-white font-semibold">{accreditation.curriculum.name}</h3>
         <p className="text-white/70 text-xs mt-0.5">{accreditation.curriculum.domain}</p>
@@ -119,7 +105,7 @@ function CurriculumCard({ accreditation }: { accreditation: any }) {
           <span className="text-[#1C2B39]">{new Date(accreditation.createdAt).toLocaleDateString()}</span>
         </div>
         <a href={accreditation.curriculum.siteUrl} target="_blank" rel="noopener noreferrer"
-          className="flex items-center gap-2 w-full justify-center border border-[#E8E4DC] text-[#1C2B39] py-2 rounded-lg text-sm hover:bg-[#F8F7F4] transition-colors">
+          className="flex items-center gap-2 w-full justify-center border border-[#E8E4DC] text-[#1C2B39] py-2 text-sm hover:bg-[#F8F7F4] transition-colors">
           <ExternalLink className="w-3.5 h-3.5" />
           Go to Site
         </a>
@@ -132,8 +118,8 @@ function StatCard({ icon, label, value, color = 'default' }: {
   icon: React.ReactNode; label: string; value: number; color?: string
 }) {
   return (
-    <div className="bg-white rounded-xl border border-[#E8E4DC] p-5 flex items-center gap-4">
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+    <div className="bg-white border border-[#E8E4DC] p-5 flex items-center gap-4">
+      <div className={`w-10 h-10 flex items-center justify-center ${
         color === 'amber' ? 'bg-amber-50 text-amber-600' : 'bg-[#F8F7F4] text-[#1C2B39]'
       }`}>
         {icon}
@@ -154,5 +140,5 @@ function StatusBadge({ status }: { status: string }) {
     REJECTED: { label: 'Rejected', cls: 'bg-red-100 text-red-700' },
   }
   const { label, cls } = map[status] ?? { label: status, cls: 'bg-gray-100 text-gray-700' }
-  return <span className={`px-2 py-0.5 rounded text-xs font-medium ${cls}`}>{label}</span>
+  return <span className={`px-2 py-0.5 text-xs font-medium ${cls}`}>{label}</span>
 }

@@ -27,8 +27,8 @@ model User {
   articles       Article[]
   accounts       Account[]
   sessions       Session[]
-  agentProfile   Agent?
-  trainerProfile Trainer?
+  institutionProfile Institution?
+  trainerProfile     Trainer?
   traineeProfile TraineeProfile?
 }
 
@@ -246,7 +246,7 @@ model Article {
   author      User     @relation(fields: [authorId], references: [id])
 }
 
-// ─── Agent / Trainer System ──────────────────────────────────────────
+// ─── Institution / Trainer System ────────────────────────────────────
 
 model Curriculum {
   id          String   @id @default(cuid())
@@ -262,35 +262,47 @@ model Curriculum {
   trainees       TraineeProfile[]
 }
 
-model Agent {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  country     String   // QA | SA | OTHER
-  companyName String?
-  phone       String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Institution {
+  id                     String    @id @default(cuid())
+  userId                 String    @unique
+  institutionName        String
+  nationality            String
+  website                String?
+  foundedYear            Int?
+  employeeCount          Int?
+  address                String?
+  founderName            String
+  commercialRegisterUrl  String?
+  approvalStatus         String    @default("PENDING") // PENDING | APPROVED | REJECTED
+  approvedAt             DateTime?
+  approvedById           String?
+  isActive               Boolean   @default(true)
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  trainers    Trainer[]
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trainers Trainer[]
 }
 
 model Trainer {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  agentId        String
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  institutionId  String?
+  phone          String
+  nationality    String
+  residence      String
+  cvUrl          String?
+  languages      String    @default("[]") // JSON array
   bio            String?
-  phone          String?
-  isActive       Boolean  @default(true)
-  approvalStatus String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  isActive       Boolean   @default(true)
+  approvalStatus String    @default("PENDING") // PENDING | APPROVED | REJECTED
   approvedAt     DateTime?
-  approvedById   String?  // Admin userId who approved
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  approvedById   String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   user                User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  agent               Agent                  @relation(fields: [agentId], references: [id])
+  institution         Institution?           @relation(fields: [institutionId], references: [id])
   accreditations      TrainerAccreditation[]
   certificateRequests CertificateRequest[]
 }
