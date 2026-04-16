@@ -381,6 +381,19 @@ model CertificateRequest {
   trainer Trainer @relation(fields: [trainerId], references: [id], onDelete: Cascade)
 }
 
+// ─── Contact Messages ─────────────────────────────────────────────────
+
+model ContactMessage {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String?
+  programme  String?
+  message    String
+  status     String   @default("UNREAD") // UNREAD | READ
+  createdAt  DateTime @default(now())
+}
+
 // ─── Trainee System ───────────────────────────────────────────────────
 
 model TraineeProfile {

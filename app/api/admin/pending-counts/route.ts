@@ -8,11 +8,12 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const [trainers, institutions, certificates] = await Promise.all([
+  const [trainers, institutions, certificates, messages] = await Promise.all([
     prisma.trainer.count({ where: { approvalStatus: 'PENDING' } }),
     prisma.institution.count({ where: { approvalStatus: 'PENDING' } }),
     prisma.certificateRequest.count({ where: { status: 'PENDING' } }),
+    prisma.contactMessage.count({ where: { status: 'UNREAD' } }),
   ])
 
-  return NextResponse.json({ trainers, institutions, certificates })
+  return NextResponse.json({ trainers, institutions, certificates, messages })
 }

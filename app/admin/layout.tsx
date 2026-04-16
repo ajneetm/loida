@@ -5,10 +5,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Users, Building2, GraduationCap,
-  BookOpen, Award, FileCheck, ChevronLeft, Menu, X, LogOut
+  BookOpen, Award, FileCheck, ChevronLeft, Menu, X, LogOut, MessageSquare
 } from 'lucide-react'
 
-type PendingCounts = { trainers: number; institutions: number; certificates: number }
+type PendingCounts = { trainers: number; institutions: number; certificates: number; messages: number }
 
 const navGroups = [
   {
@@ -31,6 +31,7 @@ const navGroups = [
     items: [
       { label: 'Users',        href: '/admin/users',         icon: Users,           badge: null },
       { label: 'Coaches',      href: '/admin/coaches',       icon: Award,           badge: null },
+      { label: 'Messages',     href: '/admin/messages',      icon: MessageSquare,   badge: 'messages' },
     ],
   },
 ]
