@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check, X, Trash2 } from 'lucide-react'
+import { Check, X, Trash2, BookOpen, Plus } from 'lucide-react'
 import { COUNTRIES } from '@/lib/countries'
 
 // ── Per-row: Approve / Reject / Delete ─────────────────────────────────────
@@ -184,6 +184,227 @@ export function AddTrainerButton() {
                 {loading ? 'Creating…' : 'Create Trainer'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+// ── Per-row: Manage Accreditations (curricula) ──────────────────────────────
+
+type Accreditation = { id: string; status: string; curriculum: { id: string; name: string; domain: string } }
+type Curriculum    = { id: string; name: string; domain: string }
+
+export function AccreditationButton({
+  trainerId, trainerName, approvalStatus,
+}: {
+  trainerId:      string
+  trainerName:    string
+  approvalStatus: string
+}) {
+  const router = useRouter()
+  const [open,          setOpen]          = useState(false)
+  const [accreditations, setAccreditations] = useState<Accreditation[]>([])
+  const [curricula,     setCurricula]     = useState<Curriculum[]>([])
+  const [selectedId,    setSelectedId]    = useState('')
+  const [adding,        setAdding]        = useState(false)
+  const [revoking,      setRevoking]      = useState<string | null>(null)
+  const [error,         setError]         = useState('')
+  const [loading,       setLoading]       = useState(false)
+
+  async function openModal() {
+    setOpen(true)
+    setError('')
+    setLoading(true)
+    const [accRes, curRes] = await Promise.all([
+      fetch(`/api/trainers/${trainerId}/accreditations`),
+      fetch('/api/curricula'),
+    ])
+    const [accData, curData] = await Promise.all([accRes.json(), curRes.json()])
+    setAccreditations(Array.isArray(accData) ? accData : [])
+    setCurricula(Array.isArray(curData) ? curData : [])
+    setLoading(false)
+  }
+
+  async function handleAdd() {
+    if (!selectedId) return
+    setAdding(true)
+    setError('')
+    const res = await fetch(`/api/trainers/${trainerId}/accreditations`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ curriculumId: selectedId }),
+    })
+    setAdding(false)
+    if (res.ok) {
+      const newAcc = await res.json()
+      setAccreditations(p => {
+        const idx = p.findIndex(a => a.id === newAcc.id)
+        return idx >= 0 ? p.map((a, i) => i === idx ? newAcc : a) : [...p, newAcc]
+      })
+      setSelectedId('')
+      router.refresh()
+    } else {
+      const data = await res.json()
+      setError(data.error || 'Failed to add curriculum.')
+    }
+  }
+
+  async function handleRevoke(accId: string) {
+    setRevoking(accId)
+    const res = await fetch(`/api/trainers/${trainerId}/accreditations/${accId}`, { method: 'DELETE' })
+    setRevoking(null)
+    if (res.ok) {
+      setAccreditations(p => p.map(a => a.id === accId ? { ...a, status: 'REVOKED' } : a))
+      router.refresh()
+    }
+  }
+
+  const active   = accreditations.filter(a => a.status === 'ACTIVE')
+  const revoked  = accreditations.filter(a => a.status !== 'ACTIVE')
+  const assigned = new Set(accreditations.filter(a => a.status === 'ACTIVE').map(a => a.curriculum.id))
+  const available = curricula.filter(c => !assigned.has(c.id))
+
+  const domainColor: Record<string, string> = {
+    HARMONY:  'bg-purple-50 text-purple-700 border-purple-200',
+    CAREER:   'bg-blue-50 text-blue-700 border-blue-200',
+    BUSINESS: 'bg-amber-50 text-amber-700 border-amber-200',
+  }
+
+  return (
+    <>
+      <button
+        onClick={openModal}
+        title="Manage curricula"
+        className={`flex items-center gap-1.5 px-2.5 py-1.5 border text-xs transition-colors ${
+          approvalStatus !== 'APPROVED'
+            ? 'border-[#E8E4DC] text-[#6B8F9E] cursor-not-allowed opacity-50'
+            : active.length > 0
+            ? 'border-[#1C2B39] text-[#1C2B39] hover:bg-[#1C2B39] hover:text-white'
+            : 'border-[#E8E4DC] text-[#6B8F9E] hover:border-[#1C2B39] hover:text-[#1C2B39]'
+        }`}
+        disabled={approvalStatus !== 'APPROVED'}
+      >
+        <BookOpen className="w-3.5 h-3.5" />
+        {active.length > 0 ? `${active.length} curricul${active.length === 1 ? 'um' : 'a'}` : 'No curricula'}
+      </button>
+
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+          <div className="bg-white w-full max-w-md shadow-xl border border-[#E8E4DC]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E4DC]">
+              <div>
+                <h2 className="font-semibold text-[#1C2B39]">Curricula — {trainerName}</h2>
+                <p className="text-xs text-[#6B8F9E] mt-0.5">Manage which curricula this trainer is accredited for</p>
+              </div>
+              <button onClick={() => setOpen(false)} className="text-[#6B8F9E] hover:text-[#1C2B39]">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              {error && <div className="bg-red-50 text-red-600 text-sm p-3">{error}</div>}
+
+              {loading ? (
+                <p className="text-sm text-[#6B8F9E] text-center py-4">Loading…</p>
+              ) : (
+                <>
+                  {/* Active accreditations */}
+                  <div>
+                    <p className="text-xs font-semibold text-[#6B8F9E] uppercase tracking-widest mb-2">Active</p>
+                    {active.length === 0 ? (
+                      <p className="text-sm text-[#6B8F9E]">No curricula assigned yet.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {active.map(acc => (
+                          <div key={acc.id} className="flex items-center justify-between gap-3 px-3 py-2 bg-[#F8F7F4] border border-[#E8E4DC]">
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[10px] px-1.5 py-0.5 border font-medium ${domainColor[acc.curriculum.domain] ?? 'bg-stone-50 text-stone-500 border-stone-200'}`}>
+                                {acc.curriculum.domain}
+                              </span>
+                              <span className="text-sm text-[#1C2B39] font-medium">{acc.curriculum.name}</span>
+                            </div>
+                            <button
+                              onClick={() => handleRevoke(acc.id)}
+                              disabled={revoking === acc.id}
+                              className="text-[#6B8F9E] hover:text-red-500 text-xs transition-colors disabled:opacity-40"
+                            >
+                              {revoking === acc.id ? '…' : 'Revoke'}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Add curriculum */}
+                  {available.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold text-[#6B8F9E] uppercase tracking-widest mb-2">Add Curriculum</p>
+                      <div className="flex gap-2">
+                        <select
+                          value={selectedId}
+                          onChange={e => setSelectedId(e.target.value)}
+                          className="flex-1 border border-[#E8E4DC] px-3 py-2 text-sm focus:outline-none focus:border-[#1C2B39] bg-white"
+                        >
+                          <option value="">Select curriculum…</option>
+                          {available.map(c => (
+                            <option key={c.id} value={c.id}>{c.name} ({c.domain})</option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={handleAdd}
+                          disabled={!selectedId || adding}
+                          className="flex items-center gap-1.5 px-4 py-2 bg-[#1C2B39] text-white text-sm font-medium hover:bg-[#2a3f52] transition-colors disabled:opacity-50"
+                        >
+                          <Plus className="w-4 h-4" />
+                          {adding ? '…' : 'Add'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {available.length === 0 && active.length > 0 && (
+                    <p className="text-xs text-[#6B8F9E]">All available curricula are already assigned.</p>
+                  )}
+
+                  {/* Revoked (collapsed) */}
+                  {revoked.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold text-[#6B8F9E] uppercase tracking-widest mb-2">Revoked</p>
+                      <div className="space-y-1">
+                        {revoked.map(acc => (
+                          <div key={acc.id} className="flex items-center justify-between gap-3 px-3 py-2 opacity-50">
+                            <span className="text-sm text-[#1C2B39] line-through">{acc.curriculum.name}</span>
+                            <button
+                              onClick={async () => {
+                                setAdding(true)
+                                const res = await fetch(`/api/trainers/${trainerId}/accreditations`, {
+                                  method:  'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body:    JSON.stringify({ curriculumId: acc.curriculum.id }),
+                                })
+                                setAdding(false)
+                                if (res.ok) {
+                                  const updated = await res.json()
+                                  setAccreditations(p => p.map(a => a.id === acc.id ? updated : a))
+                                  router.refresh()
+                                }
+                              }}
+                              disabled={adding}
+                              className="text-green-600 hover:text-green-700 text-xs transition-colors disabled:opacity-40"
+                            >
+                              Restore
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

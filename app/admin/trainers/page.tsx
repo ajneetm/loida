@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import { TrainerRowActions, AddTrainerButton } from './TrainerActions'
+import { TrainerRowActions, AccreditationButton, AddTrainerButton } from './TrainerActions'
 
 export default async function AdminTrainersPage() {
   const session = await auth()
@@ -96,18 +96,20 @@ function TrainerRow({ trainer }: { trainer: any }) {
             : <span className="text-xs text-[#6B8F9E]">Independent</span>
           }
           <span className="text-xs text-[#6B8F9E]">{trainer.nationality} · {trainer.residence}</span>
-          {trainer.accreditations.map((acc: any) => (
-            <span key={acc.id} className="px-2 py-0.5 bg-[#E8F4F8] text-[#1C2B39] text-xs">
-              {acc.curriculum.name}
-            </span>
-          ))}
         </div>
       </div>
-      <TrainerRowActions
-        trainerId={trainer.id}
-        trainerName={trainer.user.name ?? 'Trainer'}
-        canApprove={trainer.approvalStatus === 'PENDING'}
-      />
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <AccreditationButton
+          trainerId={trainer.id}
+          trainerName={trainer.user.name ?? 'Trainer'}
+          approvalStatus={trainer.approvalStatus}
+        />
+        <TrainerRowActions
+          trainerId={trainer.id}
+          trainerName={trainer.user.name ?? 'Trainer'}
+          canApprove={trainer.approvalStatus === 'PENDING'}
+        />
+      </div>
     </div>
   )
 }
