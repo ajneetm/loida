@@ -39,7 +39,7 @@ const navGroups = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
-  const [counts, setCounts] = useState<PendingCounts>({ trainers: 0, institutions: 0, certificates: 0 })
+  const [counts, setCounts] = useState<PendingCounts>({ trainers: 0, institutions: 0, certificates: 0, messages: 0 })
 
   useEffect(() => {
     fetch('/api/admin/pending-counts')
