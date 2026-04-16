@@ -28,7 +28,7 @@ export default function AgentLayout({ children }: { children: React.ReactNode })
         fixed top-0 left-0 h-full w-60 bg-[#022269] text-white flex flex-col z-50
         transform transition-transform duration-200
         ${open ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static lg:flex
+        lg:translate-x-0 lg:static lg:flex lg:min-h-screen lg:h-auto lg:sticky lg:top-0 lg:self-stretch
       `}>
         {/* Logo */}
         <div className="px-5 py-5 border-b border-white/10 flex items-center justify-between">
