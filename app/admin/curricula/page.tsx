@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Plus, BookOpen } from 'lucide-react'
+import DeleteCurriculumButton from './DeleteCurriculumButton'
 
 export default async function AdminCurriculaPage() {
   const session = await auth()
@@ -37,11 +38,14 @@ export default async function AdminCurriculaPage() {
             <div key={c.id} className="bg-white rounded-none border border-[#E8E4DC] p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-[#1C2B39]">{c.name}</h3>
-                <span className={`px-2 py-0.5 rounded-none text-xs font-medium ${
-                  c.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                }`}>
-                  {c.isActive ? 'Active' : 'Inactive'}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className={`px-2 py-0.5 rounded-none text-xs font-medium ${
+                    c.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                  }`}>
+                    {c.isActive ? 'Active' : 'Inactive'}
+                  </span>
+                  <DeleteCurriculumButton id={c.id} name={c.name} count={c._count.accreditations} />
+                </div>
               </div>
               <p className="text-xs text-[#6B8F9E]">{c.domain}</p>
               <a href={c.siteUrl} target="_blank" rel="noopener noreferrer"
