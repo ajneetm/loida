@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import InstitutionActions from './InstitutionActions'
+import { InstitutionRowActions, AddInstitutionButton } from './InstitutionActions'
 
 export default async function AdminInstitutionsPage() {
   const session = await auth()
@@ -24,20 +24,23 @@ export default async function AdminInstitutionsPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold text-[#1C2B39]">Institutions</h1>
-        <p className="text-sm text-[#6B8F9E] mt-1">
-          <span className="font-medium text-amber-600">{pending.length} pending</span>
-          {' · '}
-          <span className="font-medium text-green-600">{approved.length} approved</span>
-          {' · '}
-          <span className="font-medium text-red-500">{rejected.length} rejected</span>
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-[#1C2B39]">Institutions</h1>
+          <p className="text-sm text-[#6B8F9E] mt-1">
+            <span className="font-medium text-amber-600">{pending.length} pending</span>
+            {' · '}
+            <span className="font-medium text-green-600">{approved.length} approved</span>
+            {' · '}
+            <span className="font-medium text-red-500">{rejected.length} rejected</span>
+          </p>
+        </div>
+        <AddInstitutionButton />
       </div>
 
       {pending.length > 0 && (
         <Section title="Pending Approval" color="amber">
-          {pending.map(i => <InstitutionRow key={i.id} institution={i} showActions />)}
+          {pending.map(i => <InstitutionRow key={i.id} institution={i} />)}
         </Section>
       )}
 
@@ -80,7 +83,7 @@ function Section({ title, color, children }: { title: string; color: string; chi
   )
 }
 
-function InstitutionRow({ institution, showActions }: { institution: any; showActions?: boolean }) {
+function InstitutionRow({ institution }: { institution: any }) {
   return (
     <div className="px-6 py-4 flex items-center justify-between gap-4">
       <div className="min-w-0 flex-1">
@@ -88,11 +91,10 @@ function InstitutionRow({ institution, showActions }: { institution: any; showAc
         <p className="text-xs text-[#6B8F9E]">{institution.user.email}</p>
         <div className="flex items-center gap-3 mt-1 flex-wrap text-xs text-[#6B8F9E]">
           <span>Founder: <span className="text-[#1C2B39]">{institution.founderName}</span></span>
-          <span>Nationality: {institution.nationality}</span>
+          <span>{institution.nationality}</span>
           {institution.foundedYear && <span>Est. {institution.foundedYear}</span>}
           {institution.employeeCount && <span>{institution.employeeCount} employees</span>}
           <span>{institution.trainers.length} trainers</span>
-          <span>{new Date(institution.user.createdAt).toLocaleDateString()}</span>
         </div>
         {institution.website && (
           <a href={institution.website} target="_blank" rel="noopener noreferrer"
@@ -101,7 +103,11 @@ function InstitutionRow({ institution, showActions }: { institution: any; showAc
           </a>
         )}
       </div>
-      {showActions && <InstitutionActions institutionId={institution.id} />}
+      <InstitutionRowActions
+        institutionId={institution.id}
+        institutionName={institution.institutionName}
+        canApprove={institution.approvalStatus === 'PENDING'}
+      />
     </div>
   )
 }

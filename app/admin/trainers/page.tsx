@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import ApprovalActions from './ApprovalActions'
+import { TrainerRowActions, AddTrainerButton } from './TrainerActions'
 
 export default async function AdminTrainersPage() {
   const session = await auth()
@@ -25,20 +25,23 @@ export default async function AdminTrainersPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold text-[#1C2B39]">Trainers</h1>
-        <p className="text-sm text-[#6B8F9E] mt-1">
-          <span className="font-medium text-amber-600">{pending.length} pending</span>
-          {' · '}
-          <span className="font-medium text-green-600">{approved.length} approved</span>
-          {' · '}
-          <span className="font-medium text-red-500">{rejected.length} rejected</span>
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-[#1C2B39]">Trainers</h1>
+          <p className="text-sm text-[#6B8F9E] mt-1">
+            <span className="font-medium text-amber-600">{pending.length} pending</span>
+            {' · '}
+            <span className="font-medium text-green-600">{approved.length} approved</span>
+            {' · '}
+            <span className="font-medium text-red-500">{rejected.length} rejected</span>
+          </p>
+        </div>
+        <AddTrainerButton />
       </div>
 
       {pending.length > 0 && (
         <Section title="Pending Approval" color="amber">
-          {pending.map(t => <TrainerRow key={t.id} trainer={t} showActions />)}
+          {pending.map(t => <TrainerRow key={t.id} trainer={t} />)}
         </Section>
       )}
 
@@ -81,21 +84,17 @@ function Section({ title, color, children }: { title: string; color: string; chi
   )
 }
 
-function TrainerRow({ trainer, showActions }: { trainer: any; showActions?: boolean }) {
+function TrainerRow({ trainer }: { trainer: any }) {
   return (
     <div className="px-6 py-4 flex items-center justify-between gap-4">
       <div className="min-w-0 flex-1">
         <p className="font-medium text-[#1C2B39]">{trainer.user.name}</p>
         <p className="text-xs text-[#6B8F9E]">{trainer.user.email}</p>
         <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-          {trainer.institution && (
-            <span className="text-xs text-[#6B8F9E]">
-              Institution: <span className="text-[#1C2B39]">{trainer.institution.user.name}</span>
-            </span>
-          )}
-          {!trainer.institution && (
-            <span className="text-xs text-[#6B8F9E]">Independent</span>
-          )}
+          {trainer.institution
+            ? <span className="text-xs text-[#6B8F9E]">Institution: <span className="text-[#1C2B39]">{trainer.institution.user.name}</span></span>
+            : <span className="text-xs text-[#6B8F9E]">Independent</span>
+          }
           <span className="text-xs text-[#6B8F9E]">{trainer.nationality} · {trainer.residence}</span>
           {trainer.accreditations.map((acc: any) => (
             <span key={acc.id} className="px-2 py-0.5 bg-[#E8F4F8] text-[#1C2B39] text-xs">
@@ -104,7 +103,11 @@ function TrainerRow({ trainer, showActions }: { trainer: any; showActions?: bool
           ))}
         </div>
       </div>
-      {showActions && <ApprovalActions trainerId={trainer.id} />}
+      <TrainerRowActions
+        trainerId={trainer.id}
+        trainerName={trainer.user.name ?? 'Trainer'}
+        canApprove={trainer.approvalStatus === 'PENDING'}
+      />
     </div>
   )
 }

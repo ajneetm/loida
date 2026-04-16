@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -8,34 +8,44 @@ import {
   BookOpen, Award, FileCheck, ChevronLeft, Menu, X, LogOut
 } from 'lucide-react'
 
+type PendingCounts = { trainers: number; institutions: number; certificates: number }
+
 const navGroups = [
   {
     label: 'Overview',
     items: [
-      { label: 'Dashboard',     href: '/admin',                    icon: LayoutDashboard },
+      { label: 'Dashboard',    href: '/admin',               icon: LayoutDashboard, badge: null },
     ],
   },
   {
     label: 'Trainer Network',
     items: [
-      { label: 'Institutions',  href: '/admin/institutions',       icon: Building2 },
-      { label: 'Trainers',      href: '/admin/trainers',           icon: GraduationCap },
-      { label: 'Curricula',     href: '/admin/curricula',          icon: BookOpen },
-      { label: 'Certificates',  href: '/admin/certificates',       icon: FileCheck },
+      { label: 'Institutions', href: '/admin/institutions',  icon: Building2,       badge: 'institutions' },
+      { label: 'Trainers',     href: '/admin/trainers',      icon: GraduationCap,   badge: 'trainers' },
+      { label: 'Curricula',    href: '/admin/curricula',     icon: BookOpen,        badge: null },
+      { label: 'Certificates', href: '/admin/certificates',  icon: FileCheck,       badge: 'certificates' },
     ],
   },
   {
     label: 'Platform',
     items: [
-      { label: 'Users',         href: '/admin/users',              icon: Users },
-      { label: 'Coaches',       href: '/admin/coaches',            icon: Award },
+      { label: 'Users',        href: '/admin/users',         icon: Users,           badge: null },
+      { label: 'Coaches',      href: '/admin/coaches',       icon: Award,           badge: null },
     ],
   },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const pathname  = usePathname()
+  const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [counts, setCounts] = useState<PendingCounts>({ trainers: 0, institutions: 0, certificates: 0 })
+
+  useEffect(() => {
+    fetch('/api/admin/pending-counts')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setCounts(data) })
+      .catch(() => {})
+  }, [pathname])
 
   return (
     <div className="min-h-screen bg-[#F8F7F4] flex">
@@ -75,6 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   const active = item.href === '/admin'
                     ? pathname === '/admin'
                     : pathname.startsWith(item.href)
+                  const count = item.badge ? counts[item.badge as keyof PendingCounts] : 0
                   return (
                     <Link
                       key={item.href}
@@ -87,7 +98,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       }`}
                     >
                       <item.icon className="w-4 h-4 flex-shrink-0" />
-                      {item.label}
+                      <span className="flex-1">{item.label}</span>
+                      {count > 0 && (
+                        <span className="min-w-[18px] h-[18px] px-1 bg-[#c71430] text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+                          {count > 99 ? '99+' : count}
+                        </span>
+                      )}
                     </Link>
                   )
                 })}
