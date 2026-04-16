@@ -310,14 +310,41 @@ model TrainerAccreditation {
 }
 
 model Workshop {
-  id           String   @id @default(cuid())
-  curriculumId String
-  title        String
-  date         DateTime
-  location     String?
-  createdAt    DateTime @default(now())
+  id              String   @id @default(cuid())
+  curriculumId    String
+  title           String
+  date            DateTime
+  location        String?
+  registrationUrl String?
+  createdAt       DateTime @default(now())
 
-  curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+  curriculum    Curriculum             @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+  registrations WorkshopRegistration[]
+  materials     WorkshopMaterial[]
+}
+
+model WorkshopRegistration {
+  id           String   @id @default(cuid())
+  workshopId   String
+  name         String
+  email        String
+  phone        String?
+  registeredAt DateTime @default(now())
+
+  workshop Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+}
+
+model WorkshopMaterial {
+  id         String   @id @default(cuid())
+  workshopId String
+  type       String   // IMAGE | VIDEO | LINK | EMBED | CODE
+  title      String
+  content    String
+  language   String?  // for CODE type
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  workshop Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
 }
 
 model CertificateRequest {

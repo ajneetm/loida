@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Trash2, CalendarDays, MapPin } from 'lucide-react'
+import Link from 'next/link'
+import { Plus, Trash2, CalendarDays, MapPin, ChevronRight } from 'lucide-react'
 
 interface Workshop {
   id:       string
@@ -16,9 +17,10 @@ export default function WorkshopsManager({
 }: {
   curriculumId:     string
   initialWorkshops: Workshop[]
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 }) {
   const [workshops, setWorkshops] = useState<Workshop[]>(initialWorkshops)
-  const [form, setForm]           = useState({ title: '', date: '', location: '' })
+  const [form, setForm]           = useState({ title: '', date: '', location: '', registrationUrl: '' })
   const [loading, setLoading]     = useState(false)
   const [deleting, setDeleting]   = useState<string | null>(null)
   const [error, setError]         = useState('')
@@ -39,7 +41,7 @@ export default function WorkshopsManager({
     if (res.ok) {
       const w = await res.json()
       setWorkshops(prev => [w, ...prev])
-      setForm({ title: '', date: '', location: '' })
+      setForm({ title: '', date: '', location: '', registrationUrl: '' })
     } else {
       setError('Failed to add workshop.')
     }
@@ -78,6 +80,11 @@ export default function WorkshopsManager({
               onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
               className="flex-1 min-w-[140px] border border-[#E8E4DC] px-3 py-2 text-sm focus:outline-none focus:border-[#1C2B39]"
             />
+            <input
+              type="url" placeholder="Registration URL (optional)" value={form.registrationUrl}
+              onChange={e => setForm(f => ({ ...f, registrationUrl: e.target.value }))}
+              className="flex-1 min-w-[180px] border border-[#E8E4DC] px-3 py-2 text-sm focus:outline-none focus:border-[#1C2B39]"
+            />
             <button type="submit" disabled={loading}
               className="flex items-center gap-2 bg-[#1C2B39] text-white px-4 py-2 text-sm hover:bg-[#2a3f52] transition-colors disabled:opacity-50">
               <Plus className="w-4 h-4" />
@@ -112,14 +119,16 @@ export default function WorkshopsManager({
                     )}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => deleteWorkshop(w.id)}
-                  disabled={deleting === w.id}
-                  className="text-red-400 hover:text-red-600 transition-colors disabled:opacity-40 flex-shrink-0"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Link href={`/admin/curricula/${curriculumId}/workshops/${w.id}`}
+                    className="flex items-center gap-1 text-xs text-[#6B8F9E] hover:text-[#1C2B39] transition-colors">
+                    Manage <ChevronRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <button type="button" onClick={() => deleteWorkshop(w.id)} disabled={deleting === w.id}
+                    className="text-red-400 hover:text-red-600 transition-colors disabled:opacity-40">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
