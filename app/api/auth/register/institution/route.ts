@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   const foundedYear     = data.get('foundedYear')?.toString().trim() || null
   const employeeCount   = data.get('employeeCount')?.toString().trim() || null
   const address         = data.get('address')?.toString().trim() || null
-  const crFile          = data.get('commercialRegister') as File | null
+  const crName          = data.get('commercialRegisterName')?.toString() || null
 
   if (!institutionName || !nationality || !email || !password || !founderName) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -25,12 +25,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Email already in use' }, { status: 409 })
   }
 
-  // Handle commercial register file
-  let commercialRegisterUrl: string | null = null
-  if (crFile && crFile.size > 0) {
-    const buffer = Buffer.from(await crFile.arrayBuffer())
-    commercialRegisterUrl = `data:${crFile.type};base64,${buffer.toString('base64')}`
-  }
+  const commercialRegisterUrl = crName ? `pending:${crName}` : null
 
   const passwordHash = await bcrypt.hash(password, 12)
 

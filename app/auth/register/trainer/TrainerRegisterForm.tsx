@@ -16,6 +16,7 @@ export default function TrainerRegisterForm() {
     phone: '', nationality: '', residence: '',
   })
   const [languages, setLanguages] = useState<string[]>([])
+  const [cvFile, setCvFile]       = useState<File | null>(null)
   const [errors, setErrors]       = useState<Record<string, string>>({})
   const [loading, setLoading]     = useState(false)
   const [done, setDone]           = useState(false)
@@ -62,11 +63,12 @@ export default function TrainerRegisterForm() {
     setErrors({})
     setLoading(true)
 
-    const res = await fetch('/api/auth/register/trainer', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ ...form, languages }),
-    })
+    const body = new FormData()
+    Object.entries(form).forEach(([k, v]) => body.append(k, v))
+    body.append('languages', JSON.stringify(languages))
+    if (cvFile) body.append('cvName', cvFile.name)
+
+    const res = await fetch('/api/auth/register/trainer', { method: 'POST', body })
     setLoading(false)
     if (res.ok) setDone(true)
     else {
@@ -191,9 +193,12 @@ export default function TrainerRegisterForm() {
                 })}
               </div>
             </Field>
-            <div className="bg-[#F8F7F4] border border-[#E8E4DC] p-3 text-xs text-[#6B8F9E]">
-              You'll be asked to submit your CV after your application is reviewed.
-            </div>
+            <Field label="CV / Resume" hint="optional — PDF or Word">
+              <input type="file" accept=".pdf,.doc,.docx"
+                onChange={e => setCvFile(e.target.files?.[0] ?? null)}
+                className="w-full border border-[#E8E4DC] px-3 py-2 text-sm text-[#6B8F9E] file:mr-3 file:border-0 file:bg-[#1C2B39] file:text-white file:px-3 file:py-1 file:text-xs cursor-pointer" />
+              {cvFile && <p className="text-xs text-green-600 mt-1">✓ {cvFile.name}</p>}
+            </Field>
             <div className="flex gap-3">
               <button type="button" onClick={() => setStep(2)}
                 className="flex-1 border border-[#E8E4DC] text-[#1C2B39] py-3 text-sm hover:bg-[#F8F7F4] transition-colors">

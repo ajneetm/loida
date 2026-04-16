@@ -61,7 +61,7 @@ export default function InstitutionRegisterForm() {
 
     const body = new FormData()
     Object.entries(form).forEach(([k, v]) => body.append(k, v))
-    if (crFile) body.append('commercialRegister', crFile)
+    if (crFile) body.append('commercialRegisterName', crFile.name)
 
     const res = await fetch('/api/auth/register/institution', { method: 'POST', body })
     setLoading(false)
