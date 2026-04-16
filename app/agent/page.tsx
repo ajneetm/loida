@@ -2,27 +2,35 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Users, BookOpen, Award, Plus } from 'lucide-react'
+import { Users, BookOpen, Award } from 'lucide-react'
+import AddTrainerModal from './AddTrainerModal'
 
 export default async function AgentDashboard() {
   const session = await auth()
   if (!session?.user) redirect('/auth/login')
 
-  const agent = await prisma.agent.findUnique({
-    where: { userId: session.user.id },
-    include: {
-      trainers: {
-        include: {
-          user:           { select: { name: true, email: true, createdAt: true } },
-          accreditations: {
-            where:   { status: 'ACTIVE' },
-            include: { curriculum: true },
+  const [agent, curricula] = await Promise.all([
+    prisma.agent.findUnique({
+      where: { userId: session.user.id },
+      include: {
+        trainers: {
+          include: {
+            user:           { select: { name: true, email: true, createdAt: true } },
+            accreditations: {
+              where:   { status: 'ACTIVE' },
+              include: { curriculum: true },
+            },
           },
+          orderBy: { createdAt: 'desc' },
         },
-        orderBy: { createdAt: 'desc' },
       },
-    },
-  })
+    }),
+    prisma.curriculum.findMany({
+      where:   { isActive: true },
+      orderBy: { name: 'asc' },
+      select:  { id: true, name: true, domain: true },
+    }),
+  ])
 
   if (!agent) redirect('/dashboard')
 
@@ -39,13 +47,7 @@ export default async function AgentDashboard() {
             {agent.companyName || session.user.name} — {agent.country}
           </p>
         </div>
-        <Link
-          href="/agent/trainers/new"
-          className="flex items-center gap-2 bg-[#1C2B39] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#2a3f52] transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Add Trainer
-        </Link>
+        <AddTrainerModal curricula={curricula} />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -63,9 +65,7 @@ export default async function AgentDashboard() {
           <div className="p-12 text-center text-[#6B8F9E]">
             <Users className="w-10 h-10 mx-auto mb-3 opacity-40" />
             <p>No trainers yet</p>
-            <Link href="/agent/trainers/new" className="text-sm text-[#1C2B39] underline mt-2 inline-block">
-              Add your first trainer
-            </Link>
+            <AddTrainerModal curricula={curricula} />
           </div>
         ) : (
           <div className="overflow-x-auto">
