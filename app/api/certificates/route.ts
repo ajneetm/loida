@@ -1,17 +1,21 @@
 // GET  /api/certificates  → list requests (admin: all, trainer: own)
-// POST /api/certificates  → submit certificate request (trainer only)
+// POST /api/certificates  → submit certificate requests (trainer only) — supports bulk
 
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
-const createSchema = z.object({
-  curriculumId: z.string(),
+const traineeSchema = z.object({
   traineeName:  z.string().min(2),
   traineeEmail: z.string().email(),
-  workshopDate: z.string(), // ISO date string
+})
+
+const createSchema = z.object({
+  curriculumId: z.string(),
+  workshopDate: z.string(),
   notes:        z.string().optional(),
+  trainees:     z.array(traineeSchema).min(1),
 })
 
 export async function GET() {
@@ -33,9 +37,7 @@ export async function GET() {
 
   const requests = await prisma.certificateRequest.findMany({
     where,
-    include: {
-      trainer: { include: { user: { select: { name: true } } } },
-    },
+    include: { trainer: { include: { user: { select: { name: true } } } } },
     orderBy: { createdAt: 'desc' },
   })
 
@@ -62,30 +64,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  // Verify trainer is accredited for this curriculum
   const accreditation = await prisma.trainerAccreditation.findUnique({
-    where: {
-      trainerId_curriculumId: {
-        trainerId:    trainer.id,
-        curriculumId: parsed.data.curriculumId,
-      },
-    },
+    where: { trainerId_curriculumId: { trainerId: trainer.id, curriculumId: parsed.data.curriculumId } },
   })
-
   if (!accreditation || accreditation.status !== 'ACTIVE') {
     return NextResponse.json({ error: 'Not accredited for this curriculum' }, { status: 403 })
   }
 
-  const request = await prisma.certificateRequest.create({
-    data: {
+  const requests = await prisma.certificateRequest.createMany({
+    data: parsed.data.trainees.map(t => ({
       trainerId:    trainer.id,
       curriculumId: parsed.data.curriculumId,
-      traineeName:  parsed.data.traineeName,
-      traineeEmail: parsed.data.traineeEmail,
       workshopDate: new Date(parsed.data.workshopDate),
       notes:        parsed.data.notes,
-    },
+      traineeName:  t.traineeName,
+      traineeEmail: t.traineeEmail,
+    })),
   })
 
-  return NextResponse.json(request, { status: 201 })
+  return NextResponse.json({ count: requests.count }, { status: 201 })
 }
