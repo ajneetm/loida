@@ -50,7 +50,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         fixed top-0 left-0 h-full w-60 bg-[#022269] flex flex-col z-50
         transform transition-transform duration-200
         ${open ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static lg:flex
+        lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:flex-shrink-0
       `}>
         {/* Logo */}
         <div className="px-5 py-5 border-b border-white/10 flex items-center justify-between">
@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="text-[#022269] text-sm font-semibold">Admin Panel</p>
         </header>
 
-        <main className="flex-1 p-6 lg:p-8 max-w-7xl w-full">
+        <main className="flex-1 p-6 lg:p-8 w-full">
           {children}
         </main>
       </div>
