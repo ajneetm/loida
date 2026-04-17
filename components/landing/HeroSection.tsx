@@ -21,29 +21,12 @@ export default function HeroSection() {
         background: 'linear-gradient(to right, rgba(1,19,68,0.95) 0%, rgba(2,34,105,0.85) 55%, rgba(2,34,105,0.55) 100%)',
       }} />
 
-      {/* Content — logo left, text right */}
+      {/* Content — text left, logo right */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 w-full">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-12 md:gap-20">
-
-          {/* Logo block */}
-          <div className="flex-shrink-0 flex flex-col items-center gap-3">
-            <div className="w-28 h-28 relative">
-              <Image
-                src="/images/logo.png"
-                alt="Loida British"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <div className="text-center">
-              <p className="text-white text-[13px] font-bold tracking-[0.18em] leading-none font-['Raleway']">LOIDA BRITISH</p>
-              <p className="text-blue-300 text-[9px] tracking-[0.22em] uppercase mt-1.5 font-['Inter']">Learning & Training</p>
-            </div>
-          </div>
+        <div className="flex flex-col md:flex-row items-center md:items-center gap-12 md:gap-20">
 
           {/* Text block */}
-          <div className="max-w-xl">
+          <div className="max-w-xl flex-1">
             <h1
               className="text-white font-bold leading-tight mb-6 font-['Raleway']"
               style={{ fontSize: 'clamp(32px, 5vw, 66px)' }}
@@ -72,6 +55,19 @@ export default function HeroSection() {
               >
                 Get Started
               </Link>
+            </div>
+          </div>
+
+          {/* Logo block — hidden on mobile, shown on desktop */}
+          <div className="hidden md:flex flex-shrink-0 flex-col items-center gap-3">
+            <div className="w-[448px] h-[448px] relative">
+              <Image
+                src="/images/whiteredlogo.svg"
+                alt="Loida British"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
           </div>
 

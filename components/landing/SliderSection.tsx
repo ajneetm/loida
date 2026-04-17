@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import LiveClock from './LiveClock'
 
 const slides = [
   {
@@ -13,6 +14,7 @@ const slides = [
     body: 'Develop general market awareness and effectively manage opportunities and risks — an exclusive programme for entrepreneurs featuring The Business Clock techniques.',
     cta: { label: 'Explore Programme', href: '/programs/advanced' },
     align: 'left' as const,
+    clockOverlay: true,
   },
   {
     id: 2,
@@ -110,6 +112,15 @@ export default function SliderSection() {
           />
         </div>
       ))}
+
+      {/* Clock overlay for slide 1 */}
+      {slide.clockOverlay && (
+        <div className="absolute inset-0 z-10 flex items-center justify-end pointer-events-none">
+          <div className="mr-16 opacity-90 drop-shadow-2xl">
+            <LiveClock size={380} />
+          </div>
+        </div>
+      )}
 
       {/* Text overlay — switches with slide */}
       <div className="absolute inset-0 z-10 flex items-center">

@@ -1,0 +1,37 @@
+
+    <svg
+      width="337"
+      height="337"
+      viewBox="0 0 337 337"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M167.971 168.434L166.056 168.428L160.678 152.068L168.521 62.6956L167.971 168.434Z"
+        fill="white"
+      />
+      <path
+        d="M167.972 168.434L169.876 168.441L175.434 152.143L168.522 62.6956L167.972 168.434Z"
+        fill="url(#paint0_linear_4050_61964)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_4050_61964"
+          x1="175.609"
+          y1="115.609"
+          x2="168.229"
+          y2="115.572"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#4A4A49" />
+          <stop offset="0.13" stop-color="#4E4E4E" />
+          <stop offset="0.28" stop-color="#5D5D5C" />
+          <stop offset="0.44" stop-color="#757574" />
+          <stop offset="0.61" stop-color="#969696" />
+          <stop offset="0.79" stop-color="#C1C1C1" />
+          <stop offset="0.97" stop-color="#F5F5F5" />
+          <stop offset="1" stop-color="white" />
+        </linearGradient>
+      </defs>
+    </svg>
+

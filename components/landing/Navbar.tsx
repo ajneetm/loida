@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
@@ -60,6 +61,13 @@ export default function Navbar() {
     <header className="fixed top-0 inset-x-0 z-[99] bg-[#f0f7f9]">
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[117px]">
 
+        {/* Logo — mobile only */}
+        <div className="lg:hidden flex items-center gap-2">
+          <div className="w-10 h-10 relative">
+            <Image src="/images/colorlogo.svg" alt="Loida British" fill className="object-contain" />
+          </div>
+          <span className="text-[#022269] font-bold text-sm tracking-wide font-['Raleway']">LOIDA BRITISH</span>
+        </div>
 
         {/* Desktop nav — ALL CAPS, 14.8px, #444, Inter */}
         <nav className="hidden lg:flex items-center h-[30px]">

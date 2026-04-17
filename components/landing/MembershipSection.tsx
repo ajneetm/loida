@@ -1,3 +1,28 @@
+import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+
+const cards = [
+  {
+    icon: MapPin,
+    title: 'Address',
+    lines: ['83 Baker Street', 'London, W1U 6AG', 'United Kingdom'],
+  },
+  {
+    icon: Phone,
+    title: 'Phone',
+    lines: ['+44 8000 608 703'],
+  },
+  {
+    icon: Mail,
+    title: 'Email',
+    lines: ['info@loidabritish.com'],
+  },
+  {
+    icon: Clock,
+    title: 'Office Hours',
+    lines: ['Monday – Friday: 9:00 AM – 6:00 PM', 'Saturday: 10:00 AM – 2:00 PM'],
+  },
+]
+
 // Location section
 export default function MembershipSection() {
   return (
@@ -13,7 +38,7 @@ export default function MembershipSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           {/* Map embed */}
-          <div className=" overflow-hidden shadow-md border border-gray-200 h-80">
+          <div className="overflow-hidden shadow-md border border-gray-200 h-80">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2482.4267390019636!2d-0.15715!3d51.52093!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761acf2e2d6e21%3A0x1d0c19cfd8c3df49!2s83%20Baker%20St%2C%20London%20W1U%206AG!5e0!3m2!1sen!2suk!4v1710000000000!5m2!1sen!2suk"
               width="100%"
@@ -27,31 +52,10 @@ export default function MembershipSection() {
 
           {/* Info cards */}
           <div className="space-y-5">
-            {[
-              {
-                icon: '📍',
-                title: 'Address',
-                lines: ['83 Baker Street', 'London, W1U 6AG', 'United Kingdom'],
-              },
-              {
-                icon: '📞',
-                title: 'Phone',
-                lines: ['+44 8000 608 703'],
-              },
-              {
-                icon: '✉️',
-                title: 'Email',
-                lines: ['info@loidabritish.com'],
-              },
-              {
-                icon: '🕐',
-                title: 'Office Hours',
-                lines: ['Monday – Friday: 9:00 AM – 6:00 PM', 'Saturday: 10:00 AM – 2:00 PM'],
-              },
-            ].map(item => (
-              <div key={item.title} className="flex gap-4 bg-white  p-5 border border-gray-100 shadow-sm">
-                <div className="w-12 h-12 bg-blue-50  flex items-center justify-center text-xl flex-shrink-0">
-                  {item.icon}
+            {cards.map(item => (
+              <div key={item.title} className="flex gap-4 bg-white p-5 border border-gray-100 shadow-sm">
+                <div className="w-12 h-12 bg-[#022269]/8 flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-5 h-5 text-[#022269]" />
                 </div>
                 <div>
                   <p className="font-semibold text-[#022269] mb-1">{item.title}</p>
