@@ -48,7 +48,7 @@ export default function BusinessClockPage() {
       <section className="pt-[117px] bg-[#022269]">
         <div className="max-w-6xl mx-auto px-6 py-14">
           <p className="text-[#c71430] text-xs tracking-[0.3em] uppercase font-semibold mb-3 font-['Inter']">
-            فلسفتنا — Our Philosophy
+            Our Philosophy
           </p>
           <h1 className="text-4xl md:text-5xl font-bold text-white font-['Raleway'] leading-tight">
             The Business Clock

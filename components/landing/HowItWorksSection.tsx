@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 
-// Business Clock teaser — matches Wix loidabritish.com homepage "فلسفتنا" section
+// Business Clock teaser — matches Wix loidabritish.com homepage philosophy section
 export default function HowItWorksSection() {
   return (
     <section id="business-clock" className="bg-[#022269] py-20">
@@ -23,7 +23,7 @@ export default function HowItWorksSection() {
           {/* Text */}
           <div className="order-1 lg:order-2">
             <p className="text-[#c71430] text-xs tracking-[0.3em] uppercase font-semibold mb-4 font-['Inter']">
-              فلسفتنا — Our Philosophy
+              Our Philosophy
             </p>
             <h2 className="text-4xl md:text-5xl font-bold text-white font-['Raleway'] leading-tight mb-4">
               The Business Clock

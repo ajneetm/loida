@@ -91,7 +91,6 @@ export default function DomainsSection() {
 
             {/* Text */}
             <div>
-              <p className="text-[#1a73e8] text-xs tracking-[0.3em] uppercase font-semibold mb-4 font-['Inter']">Who We Are</p>
               <h2 className="font-bold text-[#022269] leading-tight mb-6 font-['Raleway']" style={{ fontSize: '40px' }}>
                 Who We Are?
               </h2>
@@ -112,35 +111,20 @@ export default function DomainsSection() {
               </Link>
             </div>
 
-            {/* Stats visual */}
-            <div className="relative">
-              <div className="relative min-h-[300px] overflow-hidden">
-                <Image
-                  src="/images/who-we-are.jpg"
-                  alt="Loida British team working together"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-                {/* Overlay with stats */}
-                <div className="relative z-10 bg-[#022269]/80 p-10 min-h-[300px] flex items-center justify-center">
-                  <div className="grid grid-cols-3 gap-6 text-center w-full">
-                    {[
-                      { value: '30+', label: 'Years Experience' },
-                      { value: '5K+', label: 'Lives Transformed' },
-                      { value: '5',   label: 'Key Programs' },
-                    ].map(stat => (
-                      <div key={stat.label}>
-                        <p className="font-bold text-white font-['Raleway']" style={{ fontSize: '36px' }}>{stat.value}</p>
-                        <p className="text-blue-200 text-xs tracking-wide mt-1 font-['Inter']">{stat.label}</p>
-                      </div>
-                    ))}
-                  </div>
+            {/* Image with color overlay + logo */}
+            <div className="relative min-h-[320px] overflow-hidden">
+              <Image
+                src="/images/who-we-are.jpg"
+                alt="Loida British team working together"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <div className="absolute inset-0 bg-[#022269]/70" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10">
+                <div className="relative w-32 h-32">
+                  <Image src="/images/whiteredlogo.svg" alt="Loida British" fill className="object-contain" />
                 </div>
-              </div>
-              <div className="absolute -bottom-4 -right-4 bg-[#022269] text-white  p-4 shadow-xl">
-                <p className="font-bold font-['Raleway']" style={{ fontSize: '20px' }}>UK</p>
-                <p className="text-xs text-blue-200 font-['Inter']">Based & Certified</p>
               </div>
             </div>
           </div>
@@ -160,10 +144,10 @@ export default function DomainsSection() {
         {programs.map((prog) => (
           <div
             key={prog.id}
-            className={`flex flex-col ${prog.imageFirst ? 'md:flex-row' : 'md:flex-row-reverse'} min-h-[472px]`}
+            className={`relative z-0 flex flex-col ${prog.imageFirst ? 'md:flex-row' : 'md:flex-row-reverse'}`}
           >
             {/* Image panel */}
-            <div className="w-full md:w-1/2 min-h-[472px] bg-[#022269] flex-shrink-0 relative overflow-hidden">
+            <div className="w-full md:w-1/2 h-64 md:h-auto md:min-h-[472px] bg-[#022269] flex-shrink-0 relative overflow-hidden">
               <Image
                 src={prog.image}
                 alt={prog.imageAlt}
@@ -173,38 +157,28 @@ export default function DomainsSection() {
               />
             </div>
 
-            {/* Text panel — exact SectioncompLz5bwf1d typography */}
-            <div className="w-full md:w-1/2 bg-white flex flex-col justify-center px-12 py-10">
-              {/* Title: 45px Raleway bold, text-color-azure-21 */}
-              <h2
-                className="font-bold text-[#022269] font-['Raleway'] mb-0 leading-tight"
-                style={{ fontSize: '45px' }}
-              >
+            {/* Text panel */}
+            <div className="w-full md:w-1/2 bg-white flex flex-col justify-center px-6 md:px-12 py-10">
+              <h2 className="font-bold text-[#022269] font-['Raleway'] mb-0 leading-tight text-3xl md:text-[45px]">
                 {prog.title}
               </h2>
 
-              {/* Subtitle: 25px red, Tajawal */}
-              <p
-                className="text-[#c71430] font-normal font-['Tajawal'] mt-2 mb-4"
-                style={{ fontSize: '25px' }}
-              >
+              <p className="text-[#c71430] font-normal font-['Tajawal'] mt-2 mb-4 text-lg md:text-[25px]">
                 {prog.subtitle}
               </p>
 
-              {/* Body lines: 25px navy, Tajawal, line-height 32.4px */}
               <div className="mb-6">
                 {prog.lines.map((line, i) => (
                   <p
                     key={i}
-                    className="text-[#022269] font-normal font-['Tajawal']"
-                    style={{ fontSize: '25px', lineHeight: '32.4px' }}
+                    className="text-[#022269] font-normal font-['Tajawal'] text-base md:text-[25px]"
+                    style={{ lineHeight: '1.6' }}
                   >
                     {line}
                   </p>
                 ))}
               </div>
 
-              {/* Read More button: Component11 exact — red text, 19.4px, 122px wide, 42px tall */}
               <Link
                 href={prog.href}
                 className="flex items-center justify-center text-[#c71430] font-['Inter'] no-underline hover:opacity-70 transition-opacity cursor-pointer"
