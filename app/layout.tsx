@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth'
 import { SessionProvider } from 'next-auth/react'
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://loidabritish.com"),
   title: { default: 'Loida British | United Kingdom', template: '%s | Loida British' },
   description: 'The central hub for lifelong learning, coaching, and career transformation.',
   keywords: ['coaching', 'career', 'business', 'self-development', 'training'],
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
     siteName: 'Loida British',
     locale: 'en_GB',
     type: 'website',
+    images: [
+      {
+        url: "https://loidabritish.com/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Loida British",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Loida British | United Kingdom",
+    description: "We Pave The Path To Excellence.",
+    images: ["https://loidabritish.com/opengraph-image"],
   },
 }
 
