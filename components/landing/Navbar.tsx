@@ -7,13 +7,13 @@ import { cn } from '@/lib/utils'
 
 // Exact widths from Wix HeaderSITEHEADER component
 // href: go to a page directly | anchor: scroll to section on homepage
-const links: { label: string; width: string; anchor?: string; href?: string }[] = [
-  { label: 'HOME',           anchor: 'home',           width: '75px'  },
-  { label: 'WHO WE ARE',    anchor: 'who-we-are',      width: '127px' },
-  { label: 'WHAT WE OFFER', anchor: 'what-we-offer',   width: '151px' },
-  { label: 'BUSINESS CLOCK',anchor: 'business-clock',  width: '159px' },
-  { label: 'LOCATION',      anchor: 'location',        width: '105px' },
-  { label: 'CONTACT US',    href: '/contact',           width: '125px' },
+const links: { label: string; width: string; anchor?: string; href?: string; external?: boolean }[] = [
+  { label: 'HOME',           anchor: 'home',                                        width: '75px'  },
+  { label: 'WHO WE ARE',    anchor: 'who-we-are',                                   width: '127px' },
+  { label: 'WHAT WE OFFER', anchor: 'what-we-offer',                                width: '151px' },
+  { label: 'منصاتنا',       href: 'https://www.ajnee.com/#platforms', external: true, width: '105px' },
+  { label: 'LOCATION',      anchor: 'location',                                     width: '105px' },
+  { label: 'CONTACT US',    href: '/contact',                                       width: '125px' },
 ]
 
 export default function Navbar() {
@@ -40,10 +40,11 @@ export default function Navbar() {
     return () => observers.forEach(o => o.disconnect())
   }, [isHome])
 
-  const handleClick = (label: string, anchor?: string, href?: string) => {
+  const handleClick = (label: string, anchor?: string, href?: string, external?: boolean) => {
     setOpen(false)
     setActive(label)
     if (href) {
+      if (external) { window.open(href, '_blank', 'noopener noreferrer'); return }
       router.push(href)
       return
     }
@@ -74,7 +75,7 @@ export default function Navbar() {
           {links.map(l => (
             <button
               key={l.label}
-              onClick={() => handleClick(l.label, l.anchor, l.href)}
+              onClick={() => handleClick(l.label, l.anchor, l.href, l.external)}
               style={{ width: l.width }}
               className={cn(
                 'flex items-center justify-center leading-[30px] text-[14.8px] font-normal font-[Inter,sans-serif] cursor-pointer transition-colors whitespace-nowrap px-[6px]',
@@ -119,7 +120,7 @@ export default function Navbar() {
           {links.map(l => (
             <button
               key={l.label}
-              onClick={() => handleClick(l.label, l.anchor, l.href)}
+              onClick={() => handleClick(l.label, l.anchor, l.href, l.external)}
               className={cn(
                 'text-left text-[14.8px] py-2.5 border-b border-gray-200 font-normal font-[Inter,sans-serif] transition-colors',
                 active === l.label ? 'bg-[#c0c8da] px-2 text-[#444]' : 'text-[#444]'
