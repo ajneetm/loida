@@ -11,7 +11,7 @@ const links: { label: string; width: string; anchor?: string; href?: string; ext
   { label: 'HOME',           anchor: 'home',                                        width: '75px'  },
   { label: 'WHO WE ARE',    anchor: 'who-we-are',                                   width: '127px' },
   { label: 'WHAT WE OFFER', anchor: 'what-we-offer',                                width: '151px' },
-  { label: 'منصاتنا',       href: 'https://www.ajnee.com/#platforms', external: true, width: '105px' },
+  { label: 'OUR PLATFORMS', href: 'https://www.ajnee.com/#platforms', external: true, width: '145px' },
   { label: 'LOCATION',      anchor: 'location',                                     width: '105px' },
   { label: 'CONTACT US',    href: '/contact',                                       width: '125px' },
 ]
